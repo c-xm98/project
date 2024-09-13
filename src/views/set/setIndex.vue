@@ -21,7 +21,8 @@
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
-            >
+              :data="testdata"
+            > 
                 <img v-if="userStore.imageUrl" :src="userStore.imageUrl" class="avatar" />
                 <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
               </el-upload>
@@ -45,8 +46,8 @@
           <div class="account-infor-wrapped">
             <span>用户姓名：</span>
             <div class="account-infor-content">
-              <el-input v-model="userStore.name" disabled/>
-              <el-button type="primary" class="mybutton">保存</el-button>
+              <el-input v-model="userStore.name" />
+              <el-button type="primary" class="mybutton" @click="saveName">保存</el-button>
             </div>
           </div>
           <!-- 账号详情页面的外壳 -->
@@ -57,7 +58,7 @@
                 <el-option label="男" value="man" />
                 <el-option label="女" value="woman" />
               </el-select>
-              <el-button type="primary" class="mybutton">保存</el-button>
+              <el-button type="primary" class="mybutton"  @click="saveGender">保存</el-button>
             </div>
           </div>
           <!-- 账号详情页面的外壳 -->
@@ -79,17 +80,49 @@
             <span>用户邮箱：</span>
             <div class="account-infor-content">
               <el-input v-model="userStore.email"/>
-              <el-button type="primary" class="mybutton">保存</el-button>
+              <el-button type="primary" class="mybutton"  @click="saveEmail">保存</el-button>
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="公司信息" name="second">Config</el-tab-pane>
+        <el-tab-pane label="公司信息" name="second">
+          <div class="account-infor-wrapped">
+            <span>公司名称：</span>
+            <div class="account-infor-content">
+              <el-input v-model="company" />
+              <el-button type="primary" class="mybutton">保存</el-button>
+            </div>
+          </div>
+          <div class="account-infor-wrapped">
+            <span>公司介绍：</span>
+            <div class="account-infor-content">
+              <el-button type="success"  >编辑公司介绍</el-button>
+            </div>
+          </div>
+          <div class="account-infor-wrapped">
+            <span>公司架构：</span>
+            <div class="account-infor-content">
+              <el-button type="success">编辑公司架构</el-button>
+            </div>
+          </div>
+          <div class="account-infor-wrapped">
+            <span>公司战略：</span>
+            <div class="account-infor-content">
+              <el-button type="success" >编辑公司战略</el-button>
+            </div>
+          </div>
+          <div class="account-infor-wrapped">
+            <span>公司高层：</span>
+            <div class="account-infor-content">
+              <el-button type="success" >编辑公司高层</el-button>
+            </div>
+          </div>
+        </el-tab-pane>
         <el-tab-pane label="首页管理" name="third">Role</el-tab-pane>
         <el-tab-pane label="其他设置" name="fourth">Task</el-tab-pane>
       </el-tabs>
     </div>
   </div>
-  //修改密码弹窗
+  <!-- 修改密码弹窗 -->
   <change ref="changeP"></change>
 </template>
 
@@ -111,8 +144,9 @@ import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps } from 'element-plus'
 
 import {useUserInFor} from '@/store/userInfor'
-import {bind} from '@/api/userInfor'
+import {bind,changeName,changeGender,changeEmail} from '@/api/userInfor'
 import change from './components/ChangePassword.vue'
+
 const userStore=useUserInFor()
 
 /* const bind=bindAccount() */
@@ -160,14 +194,55 @@ const accountData=reactive({
   gender:'',
   email:''
 })
-//打开修改密码弹窗
+/* 打开修改密码弹窗 */
 const changeP=ref()
 const openChangePassword=()=>{
   changeP.value.open()
 }
+const saveName=async()=>{
+  const res=await changeName(userStore.name,localStorage.getItem('id'))
+  if(res.data.status==0){
+        ElMessage({
+          message:'修改成功',
+          type:'success'
+        })
+    }else{
+    ElMessage.error('修改失败')
+    }
+  
+}
+const saveGender=async()=>{
+  const res=await changeName(userStore.gender,localStorage.getItem('id'))
+  if(res.data.status==0){
+        ElMessage({
+          message:'修改成功',
+          type:'success'
+        })
+    }else{
+    ElMessage.error('修改失败')
+    }
+  
+}
+const saveEmail=async()=>{
+  const res=await changeName(userStore.email,localStorage.getItem('id'))
+  if(res.data.status==0){
+        ElMessage({
+          message:'修改成功',
+          type:'success'
+        })
+    }else{
+    ElMessage.error('修改失败')
+    }
+}
+const testdata=ref('swiper1')
+//公司
+const company=ref()
 </script>
 
 <style lang="scss" scoped>
+::-webkit-scrollbar{
+  display: none;
+}
 /* 外壳 */
 .common-wrapped{
   padding: 8px;
@@ -177,7 +252,7 @@ const openChangePassword=()=>{
   /* 内容 */
   .common-content{
     padding:0 10px;
-    height: 100%;
+    //height: 100%;
     background: #fff;
     /* 账号信息  外壳和内容*/
     .account-infor-wrapped{

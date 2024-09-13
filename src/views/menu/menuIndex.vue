@@ -71,7 +71,7 @@
       </el-aside>
       <el-container>
         <el-header>
-          <span class="header-left-content">尊敬的xxx欢迎登录！ </span>
+          <span class="header-left-content">尊敬的 {{userStore.name}} 欢迎登录！ </span>
           <div class="header-right-conten">
             <el-icon><Message /></el-icon>
             <!-- 右上角的小头像 -->
@@ -116,12 +116,15 @@ const userStore=useUserInFor()
 </script>
 
 <style lang="scss" scoped>
+::-webkit-scrollbar{
+  display: none;
+}
 /* 侧边栏样式 */
   .el-aside{
-    height: 100vh;
+    height: 105vh;
     background-color: #2b303b;
     width: 200px;
-    overflow: hidden;
+    //overflow: hidden;
     .side_text{
       background-color: #2b303b;
       padding: 20px;
@@ -134,7 +137,6 @@ const userStore=useUserInFor()
       width: 210px;
       height: 100px;
       border-block: 0px;
-      
     }
     .el-menu-item{
       color: #fff;
