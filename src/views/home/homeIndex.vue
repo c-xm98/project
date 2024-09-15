@@ -6,32 +6,18 @@
     <!-- 轮播图外壳 -->
     <div class="swiper-wrapped">
       <el-carousel :interval="4000" type="card" height="320px" indicator-position="outside">
-        <el-carousel-item v-for="item in 6" :key="item">
-          <h3 text="2xl" justify="center">{{ item }}</h3>
+        <el-carousel-item v-for="(item,index) in imageSwiperUrl" :key="index">
+          <img :src="item" class="swiper" />
         </el-carousel-item>
       </el-carousel>
     </div>
     <!-- 栅格布局外壳 -->
     <div class="layout-wrapped">
       <el-row :gutter="20">
-        <el-col :span="6">
+        <el-col :span="6" v-for="(item,index) in companyintroduce" :key="index">
           <div class="company-massage-area" >
-          <span>公司介绍</span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="company-massage-area" >
-          <span>公司架构</span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="company-massage-area" >
-          <span>公司战略</span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="company-massage-area" >
-          <span>高层介绍</span>
+          <span>{{item.set_name}}</span>
+          <div v-html="item.set_text" class="company-introduce" @click="openIntroduce(index)"></div>
           </div>
         </el-col>
       </el-row>
@@ -69,7 +55,29 @@ import {  ref } from 'vue'
  const item=ref({
     frist:'首页',
  })
-
+//获取轮播图
+import {getAllSwiper,getAllCompanyIntroduce} from '@/api/setting.js'
+const imageSwiperUrl=ref([])
+//获取轮播图
+const getAllswiper=async ()=>{
+  imageSwiperUrl.value=await getAllSwiper()
+}
+getAllswiper()
+//获取公司介绍
+const companyintroduce=ref([])
+const getAllCompanyintroduce=async ()=>{
+  const res=await getAllCompanyIntroduce()
+  const[name,...intro]=res
+  companyintroduce.value=intro
+}
+getAllCompanyintroduce()
+//打开介绍信息
+//import editor from '@/views/set/components/EditorDialog.vue'
+import { bus } from "@/utils/mitt.js"
+const openIntroduce=(id:number)=>{
+  bus.emit('editorTitle',id)
+  //editorP.value.open()
+}
  const tableData = [
   {
     date: '2016-05-03',
@@ -117,6 +125,10 @@ import {  ref } from 'vue'
     padding: 0 20px;
     background-color:#fff ;
     margin-bottom: 8px;
+    .swiper{
+      width: 100%;
+      height: 100%;
+    }
     .el-carousel__item h3 {
       color: #475669;
       opacity: 0.75;
@@ -145,6 +157,15 @@ import {  ref } from 'vue'
       span{
         border-bottom:1px solid #409eff ;
         font-size: 14px;
+      }
+      .company-introduce{
+        text-indent: 24px;
+        font-size: 14px;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 3;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
     }
     .company-massage-area:hover{

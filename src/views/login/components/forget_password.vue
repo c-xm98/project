@@ -68,13 +68,13 @@
     const verifyAccount=async()=>{
       const res =await verify(forgetData)
       console.log(res);
-      if(res.data.status==0){
+      if(res.status==0){
         ElMessage({
           message:'验证成功',
           type:'success'
         })
         //需要用到后端返回的id，先将id本地存储
-        localStorage.setItem('id',res.data.id)
+        localStorage.setItem('id',res.id)
         //验证成功  页面跳转
         state.forgetPasswordDialog=false
       state.changePasswordDialog=true  

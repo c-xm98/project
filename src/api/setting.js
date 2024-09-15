@@ -10,7 +10,6 @@ export const getAllSwiper=()=>{
 }
 //获取公司名称
 export const getCompanyName=()=>{
-    
     return instance({
         url:'/set/getCompanyName',
         method:'POST',

@@ -23,13 +23,13 @@ export const useUserInFor = defineStore('userinfor', {
     async userInfor(id){
         const res=await getUserInfor(id)
         console.log('333',res);
-        this.imageUrl=res.data.image_url
-        this.department=res.data.department
-        this.name=res.data.name
-        this.gender=res.data.gender
-        this.email=res.data.email
-        this.identity=res.data.identity
-        this.account=res.data.account
+        this.imageUrl=res.image_url
+        this.department=res.department
+        this.name=res.name
+        this.gender=res.gender
+        this.email=res.email
+        this.identity=res.identity
+        this.account=res.account
     }
   },
   

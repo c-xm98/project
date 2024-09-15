@@ -124,7 +124,7 @@ const Register=async()=>{
     //传入表单数据的账号和密码
   const res=await register(registerData)
   //提示用户注册成功
-  if(res.data.message=='注册账号成功'){
+  if(res.message=='注册账号成功'){
     ElMessage({
       message:'注册成功',
       type:'success'
@@ -142,11 +142,11 @@ const Register=async()=>{
 const Login=async()=>{
   //传入表单数据的账号和密码
   const res=await login(loginData)
-  const {id} =res.data.results
+  const {id} =res.results
   //存到本地
-  const {token}=res.data
-  console.log('222',id);
-  if(res.data.message=='登录成功'){
+  const {token}=res
+  //console.log('222',id);
+  if(res.message=='登录成功'){
     ElMessage({
       message:'登录成功',
       type:'success'
