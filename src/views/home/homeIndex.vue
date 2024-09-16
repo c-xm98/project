@@ -5,7 +5,7 @@
   <div class="home-wrapped">
     <!-- 轮播图外壳 -->
     <div class="swiper-wrapped">
-      <el-carousel :interval="4000" type="card" height="320px" indicator-position="outside">
+      <el-carousel :interval="2000" type="card" height="320px" indicator-position="outside">
         <el-carousel-item v-for="(item,index) in imageSwiperUrl" :key="index">
           <img :src="item" class="swiper" />
         </el-carousel-item>
@@ -14,10 +14,10 @@
     <!-- 栅格布局外壳 -->
     <div class="layout-wrapped">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="(item,index) in companyintroduce" :key="index">
+        <el-col :span="6" v-for="(item,index) in companyintroduce" :key="index"  @click="openIntroduce(index+1)">
           <div class="company-massage-area" >
           <span>{{item.set_name}}</span>
-          <div v-html="item.set_text" class="company-introduce" @click="openIntroduce(index)"></div>
+          <div v-html="item.set_text" class="company-introduce"></div>
           </div>
         </el-col>
       </el-row>
@@ -45,6 +45,7 @@
       </div>
     </div>
   </div>
+  <introduce ref="intro"></introduce>
 </template>
 
 <script lang="ts" setup>
@@ -72,12 +73,16 @@ const getAllCompanyintroduce=async ()=>{
 }
 getAllCompanyintroduce()
 //打开介绍信息
-//import editor from '@/views/set/components/EditorDialog.vue'
-import { bus } from "@/utils/mitt.js"
+import introduce from '@/views/home/compontents/IntroduceDialog.vue'
+import { bus } from "@/utils/mitt.js" 
+//介绍弹窗
+const intro=ref()
 const openIntroduce=(id:number)=>{
-  bus.emit('editorTitle',id)
-  //editorP.value.open()
+  bus.emit('introduce',id)
+  //console.log(introduceP.value.open);
+  intro.value.open()
 }
+
  const tableData = [
   {
     date: '2016-05-03',

@@ -9,7 +9,7 @@
             <el-icon><House /></el-icon>
           <span>首页</span>
           </el-menu-item>
-            <el-menu-item index="2" >
+            <el-menu-item index="overvirew" >
               <el-icon><Document /></el-icon>
               <span>系统概览</span>
             </el-menu-item>

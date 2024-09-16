@@ -15,8 +15,8 @@
           <!-- 登录的卡片 -->
           <el-card class="box-card">
             <!-- 登录卡片的标签 -->
-            <el-tabs  class="demo-tabs" @tab-click="handleClick" :stretch="true">
-              <el-tab-pane label="登录" name="登录" v-model="activeName" >
+            <el-tabs  class="demo-tabs" @tab-click="handleClick" :stretch="true" v-model="activeNameL">
+              <el-tab-pane label="登录" name="登录" >
                 <el-form class="login-form">
                   <el-form-item label="账号">
                     <el-input v-model="loginData.account" placeholder="请输入账号" />
@@ -89,6 +89,7 @@ import {useUserInFor} from '@/store/userInfor'
 const store =useUserInFor()
 
 const activeName = ref('first')
+const activeNameL=ref('登录')
 const router=useRouter()
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)
@@ -279,5 +280,8 @@ const Login=async()=>{
     width: 300px;
     height: 45px;
     font-size: 16px;
+  }
+  :deep(.el-tab-pane){
+    display: block;
   }
 </style>

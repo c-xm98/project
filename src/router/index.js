@@ -28,6 +28,11 @@ const routes=[
                 name:'set',
                 path:'/set',
                 component:()=>import('@/views/set/setIndex.vue')
+             },
+             {//系统概览
+                name:'overvirew',
+                path:'/overvirew',
+                component:()=>import('@/views/overvirew/OverviewIndex.vue')
              }
         ]
     }

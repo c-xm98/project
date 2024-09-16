@@ -8,7 +8,7 @@
       <!-- table标签 -->
       <el-tabs v-model="activeName" class="demo-tabs">
         <el-tab-pane label="账号详情" name="first">
-          <!-- 账号详情页面的外壳 -->
+          <!-- 头像详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户头像：</span>
             <div class="account-infor-content">
@@ -20,7 +20,7 @@
               action="http://127.0.0.1:3007/user/uploadAvatar"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
+              
               :data="testdata"
             > 
                 <img v-if="userStore.imageUrl" :src="userStore.imageUrl" class="avatar" />
@@ -35,14 +35,14 @@
               <el-input v-model="userStore.account" disabled/>
             </div>
           </div>
-          <!-- 账号详情页面的外壳 -->
+          <!-- 密码详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户密码：</span>
             <div class="account-infor-content">
               <el-button type="primary" @click="openChangePassword" >修改密码</el-button>
             </div>
           </div>
-          <!-- 账号详情页面的外壳 -->
+          <!-- 姓名详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户姓名：</span>
             <div class="account-infor-content">
@@ -50,7 +50,7 @@
               <el-button type="primary" class="mybutton" @click="saveName">保存</el-button>
             </div>
           </div>
-          <!-- 账号详情页面的外壳 -->
+          <!--性别详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户性别：</span>
             <div class="account-infor-content">
@@ -61,21 +61,21 @@
               <el-button type="primary" class="mybutton"  @click="saveGender">保存</el-button>
             </div>
           </div>
-          <!-- 账号详情页面的外壳 -->
+          <!-- 身份详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户身份：</span>
             <div class="account-infor-content">
               <el-input v-model="userStore.identity" disabled/>
             </div>
           </div>
-          <!-- 账号详情页面的外壳 -->
+          <!-- 部门详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户部门：</span>
             <div class="account-infor-content">
               <el-input v-model="userStore.department" disabled/>
             </div>
           </div>
-          <!-- 账号详情页面的外壳 -->
+          <!-- 邮箱详情页面的外壳 -->
           <div class="account-infor-wrapped">
             <span>用户邮箱：</span>
             <div class="account-infor-content">
@@ -131,7 +131,6 @@
                 action="http://127.0.0.1:3007/set/uploadSwiper"
                 :show-file-list="false"
                 :on-success="handleSwiperSuccess"
-                
                 :data="item"
               >
                 <template #trigger>
@@ -238,7 +237,7 @@ const saveName=async()=>{
   
 }
 const saveGender=async()=>{
-  const res=await changeName(userStore.gender,localStorage.getItem('id'))
+  const res=await changeGender(userStore.gender,localStorage.getItem('id'))
   if(res.status==0){
         ElMessage({
           message:'修改成功',
@@ -250,7 +249,7 @@ const saveGender=async()=>{
   
 }
 const saveEmail=async()=>{
-  const res=await changeName(userStore.email,localStorage.getItem('id'))
+  const res=await changeEmail(userStore.email,localStorage.getItem('id'))
   if(res.status==0){
         ElMessage({
           message:'修改成功',
