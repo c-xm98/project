@@ -89,9 +89,32 @@ wangEditor
 # 系统概览 包括：用户管理、产品管理、消息管理
 - 使用了ECharts、element栅格布局
 ### 基础布局
-
 ## 用户管理
+
 ## 产品管理
+- ProductManageIndex.vue
+- 布局
+```
+ <!-- 面包屑组件 -->
+  <breadCrumb ref="breadcrumb" :item="item" ></breadCrumb>
+  <!-- 表格外壳 -->
+   <div class="table-wrapped">
+    <!-- 顶部 -->
+    <div class="table-top">
+        <!-- 表格头部 -->
+        <div class="table-header">
+            <!-- 搜索框 -->
+             <div class="search-wrapped"></div>
+             <div class="button-wrapped"></div>
+        </div>
+        <!-- 表格内容 -->
+        <div class="table-content"></div>
+    </div>
+    <!-- 底部 -->
+    <div class="table-footer"></div>
+   </div>
+```
+- 
 ## 消息管理
 
 

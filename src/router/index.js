@@ -33,6 +33,26 @@ const routes=[
                 name:'overvirew',
                 path:'/overvirew',
                 component:()=>import('@/views/overvirew/OverviewIndex.vue')
+             },
+             {//产品管理
+                name:'product_manage',
+                path:'/product_manage',
+                component:()=>import('@/views/user_manage/product_manage/ProductManageIndex.vue')
+             },
+             {//用户管理
+                name:'users_manage',
+                path:'/users_manage',
+                component:()=>import('@/views/user_manage/users_manage/UsersManageIndex.vue')
+             },
+             {//消息管理massage
+                name:'massage_manage',
+                path:'/massage_manage',
+                component:()=>import('@/views/user_manage/message_manage/MessageManageIndex.vue')
+             },
+             {//用户列表
+                name:'user_list',
+                path:'/user_list',
+                component:()=>import('@/views/user_manage/user_list/UserListIndex.vue')
              }
         ]
     }
