@@ -114,7 +114,24 @@ wangEditor
     <div class="table-footer"></div>
    </div>
 ```
-- 
+- 接口
+```
+//很多个接口
+export const getAdminList=identity=>{
+    return instance({
+        /* 后端获取用户信息 */
+        url:'/user/getAdminList',
+        method:'POST',
+        data:{
+            identity 
+        }
+    })
+}
+```
+- 产品管理员三个窗口 弹窗
+添加、编辑、删除
+CreateAdmin.vue
+
 ## 消息管理
 
 
