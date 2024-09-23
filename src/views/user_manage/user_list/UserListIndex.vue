@@ -17,13 +17,13 @@
                     />
              </div>
              <div class="button-wrapped">
-                <el-button type="primary">获取用户列表</el-button>
+                <el-button type="primary" @click="openCreate">获取用户列表</el-button>
              </div>
         </div>
         <!-- 表格内容 -->
         <div class="table-content">
             <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="index"  width="50" />
+                <el-table-column type="index"  width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
                 <el-table-column prop="department" label="部门" />
@@ -50,6 +50,8 @@
         />
     </div>
    </div>
+   <!-- 弹窗组件 -->
+   <create ref="createP"></create>
 </template>
 
 <script lang="ts" setup>
@@ -71,7 +73,12 @@ const tableData = ref([
         index:1
     }
 ])
-
+//按钮 添加管理员
+import create from '@/views/user_manage/components/CreateAdmin.vue'
+const createP=ref()
+const openCreate=()=>{
+    createP.value.open()
+}
 </script>
 
 <style lang="scss" scoped>

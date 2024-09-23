@@ -17,13 +17,13 @@
                     />
              </div>
              <div class="button-wrapped">
-                <el-button type="primary">添加产品管理员</el-button>
+                <el-button type="primary" @click="openCreate(1)">添加产品管理员</el-button>
              </div>
         </div>
         <!-- 表格内容 -->
         <div class="table-content">
             <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="index"  width="50" />
+                <el-table-column type="index"  width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
                 <el-table-column prop="department" label="部门" />
@@ -31,8 +31,8 @@
                 <el-table-column  label="操作" >
                     <template #default="{row}">
                         <div>
-                            <el-button type="success">编辑</el-button>
-                            <el-button type="danger">删除</el-button>
+                            <el-button type="success" @click="openEdit(row.id)">编辑</el-button>
+                            <el-button type="danger" @click="openDelete">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -50,6 +50,10 @@
         />
     </div>
    </div>
+   <!-- 弹窗组件 -->
+    <create ref="createP" @success="getAdminlist"></create>
+    <edit ref="editP" @success="getAdminlist"></edit>
+    <deleteButton ref="deleteP" @success="getAdminlist"></deleteButton>
 </template>
 
 <script lang="ts" setup>
@@ -61,17 +65,46 @@ const item=ref({
 frist:'产品管理员',
  })
  //输入框
- import { Search } from '@element-plus/icons-vue'
-import { id } from 'element-plus/es/locale/index.mjs';
+ import { Delete, Search } from '@element-plus/icons-vue'
+//import index from 'element-plus/es/locale/index.mjs';
+//const Id=index.id
  const input2 = ref('')
  //表格
- 
-const tableData = ref([
-    {
-        index:1
-    }
-])
+const tableData = ref([])
 
+
+//获取管理员列表
+import {getAdminList} from '@/api/userInfor.js'
+const getAdminlist=async()=>{
+    tableData.value=await getAdminList(item.value.frist)
+}
+getAdminlist()
+//按钮 添加管理员
+import create from '@/views/user_manage/components/CreateAdmin.vue'
+import { bus } from "@/utils/mitt.js"
+ 
+const createP=ref()
+const openCreate=(id:number)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+  bus.emit('createId',id)
+    createP.value.open()
+}
+//按钮 编辑
+import edit from '@/views/user_manage/components/EditAdmin.vue'
+const editP=ref()
+const openEdit=(id:number)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+  bus.emit('editId',id)
+  editP.value.open()
+}
+//删除按钮 降级管理员
+import deleteButton from '@/views/user_manage/components/DeleteAdmin.vue'
+const deleteP=ref()
+const openDelete=(id:number)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+    bus.emit('deleteId',id)
+  deleteP.value.open()
+}
 </script>
 
 <style lang="scss" scoped>

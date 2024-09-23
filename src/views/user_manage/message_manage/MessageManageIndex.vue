@@ -17,13 +17,13 @@
                     />
              </div>
              <div class="button-wrapped">
-                <el-button type="primary">添加消息管理员</el-button>
+                <el-button type="primary" @click="openCreate(3)">添加消息管理员</el-button>
              </div>
         </div>
         <!-- 表格内容 -->
         <div class="table-content">
             <el-table :data="tableData" style="width: 100%">
-                <el-table-column prop="index"  width="50" />
+                <el-table-column type="index" width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
                 <el-table-column prop="department" label="部门" />
@@ -31,7 +31,7 @@
                 <el-table-column  label="操作" >
                     <template #default="{row}">
                         <div>
-                            <el-button type="success">编辑</el-button>
+                            <el-button type="success" @click="openEdit(3)">编辑</el-button>
                             <el-button type="danger">删除</el-button>
                         </div>
                     </template>
@@ -50,6 +50,9 @@
         />
     </div>
    </div>
+    <!-- 弹窗组件 -->
+    <create ref="createP"></create>
+    <edit ref="editP"></edit>
 </template>
 
 <script lang="ts" setup>
@@ -71,7 +74,26 @@ const tableData = ref([
         index:1
     }
 ])
+//按钮 添加管理员
 
+import create from '@/views/user_manage/components/CreateAdmin.vue'
+import { bus } from "@/utils/mitt.js"
+
+const createP=ref()
+const openCreate=(id:number)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+  bus.emit('createId',id)
+    createP.value.open()
+}
+//按钮 编辑
+import edit from '@/views/user_manage/components/EditAdmin.vue'
+//import EditAdmin from '@/views/user_manage/components/EditAdmin.vue';
+const editP=ref()
+const openEdit=(id:number)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+  bus.emit('editId',id)
+  editP.value.open()
+}
 </script>
 
 <style lang="scss" scoped>
