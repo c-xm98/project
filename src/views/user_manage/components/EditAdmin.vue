@@ -76,7 +76,7 @@ defineExpose({
 })
 //接口
 interface form {
-    id?:number,
+    id?:number|null,
     account:string,
     name:string,
     sex:string,
@@ -85,7 +85,7 @@ interface form {
 }
 //数据
 const formData : form=reactive({
-    id:undefined,
+    id:null,
     account:'',
     name:'',
     sex:'',

@@ -90,7 +90,10 @@ wangEditor
 - 使用了ECharts、element栅格布局
 ### 基础布局
 ## 用户管理
-
+### 用户管理页面的分页功能
+两种实现方式
+- 1 前端
+- 2 后端
 ## 产品管理
 - ProductManageIndex.vue
 - 布局

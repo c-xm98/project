@@ -22,7 +22,7 @@
         </div>
         <!-- 表格内容 -->
         <div class="table-content">
-            <el-table :data="tableData" style="width: 100%">
+            <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
@@ -111,6 +111,10 @@ const openEdit=(id:number)=>{
             justify-content: space-between;
             align-items: center;
             height: 48px;
+            background: #fff;
+        }
+        .table-content{
+            padding:0 24px;
             background: #fff;
         }
     }

@@ -168,6 +168,17 @@ export const searchUser=account=>{
         }
     })
 }
+//通过部门进行筛选进行搜索
+export const searchUserBydepartment=department=>{
+    return instance({
+        /* 后端获取用户信息 */
+        url:'/user/searchUserBydepartment',
+        method:'POST',
+        data:{
+            department
+        }
+    })
+}
 //冻结用户
 export const banUser=id=>{
     return instance({
@@ -206,6 +217,28 @@ export const deleteUser=(id,identity)=>{
         method:'POST',
         data:{
             id,
+            identity
+        }
+    })
+}
+//获取总人数的接口
+export const getAdminListLength=identity=>{
+    return instance({
+        /* 后端获取用户信息 */
+        url:'/user/getAdminListLength',
+        method:'POST',
+        data:{
+            identity
+        }
+    })
+}
+export const returnListData=(pager,identity)=>{
+    return instance({
+        /* 后端获取用户信息 */
+        url:'/user/returnListData',
+        method:'POST',
+        data:{
+            pager,
             identity
         }
     })

@@ -14,6 +14,7 @@
                     class="w-50 m-2"
                     placeholder="输入账号进行搜索"
                     :suffix-icon="Search"
+                    @change="searchAdmin"
                     />
              </div>
              <div class="button-wrapped">
@@ -22,17 +23,18 @@
         </div>
         <!-- 表格内容 -->
         <div class="table-content">
-            <el-table :data="tableData" style="width: 100%">
+            <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index"  width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
                 <el-table-column prop="department" label="部门" />
                 <el-table-column prop="email" label="邮箱"  />
-                <el-table-column  label="操作" >
+                <el-table-column prop="update_time" label="更新时间"  />
+                <el-table-column  label="操作" width="200px">
                     <template #default="{row}">
                         <div>
                             <el-button type="success" @click="openEdit(row.id)">编辑</el-button>
-                            <el-button type="danger" @click="openDelete">删除</el-button>
+                            <el-button type="danger" @click="openDelete(row.id)">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -43,11 +45,13 @@
     <!-- 底部 -->
     <div class="table-footer">
         <el-pagination
-            :page-size="20"
-            :pager-count="11"
+            :page-size="3"
+            :pager-count="paginationData.pageCount"
+            :current-page="paginationData.currentPage"
+            @current-change="currentChange"
             layout="prev, pager, next"
-            :total="1000"
-        />
+            :total="adminTotal"
+            />
     </div>
    </div>
    <!-- 弹窗组件 -->
@@ -59,24 +63,59 @@
 <script lang="ts" setup>
 /* 引入面包屑 */
 import breadCrumb from '@/components/breadCrumb.vue'
-import {ref } from 'vue'
+import {ref,reactive} from 'vue'
 const breadcrumb=ref()
 const item=ref({
 frist:'产品管理员',
  })
- //输入框
- import { Delete, Search } from '@element-plus/icons-vue'
-//import index from 'element-plus/es/locale/index.mjs';
-//const Id=index.id
- const input2 = ref('')
+
+
  //表格
 const tableData = ref([])
+ //输入的用户账号
+ const input2 = ref<number>()
+ //输入框
+//import index from 'element-plus/es/locale/index.mjs';
+//const Id=index.id
+//搜索框
+import {searchUser,returnListData,getAdminListLength} from '@/api/userInfor.js'
+const searchAdmin=async()=>{
+    //搜索完成后赋值到表格里
+    tableData.value=await searchUser(input2.value)
+}
+//分页
+const paginationData=reactive({
+//总页数
+pageCount:1,
+//当前所处页数
+currentPage:1,
+})
+//总数 获取管理员数量
+const adminTotal=ref<number>(0)
+const getAdminlistLength=async()=>{
+    const res=await getAdminListLength('产品管理员')
+    adminTotal.value=res.length
+    //console.log(adminTotal.value);
+    
+    //页数等于向上取整
+    paginationData.pageCount=Math.ceil(res.length/1)
+}
+getAdminlistLength()
+//获取默认的第一页的数据
+const getFirstPageList=async()=>{
+    tableData.value=await returnListData(0,'产品管理员')
+}
+getFirstPageList()
+//监听 换页
+const currentChange=async(value:number)=>{
+    tableData.value=await returnListData(value-1,'产品管理员')
+}
 
 
 //获取管理员列表
-import {getAdminList} from '@/api/userInfor.js'
-const getAdminlist=async()=>{
-    tableData.value=await getAdminList(item.value.frist)
+//import {getAdminList} from '@/api/userInfor.js'
+const getAdminlist=()=>{
+    getAdminlistLength()
 }
 getAdminlist()
 //按钮 添加管理员
@@ -95,6 +134,8 @@ const editP=ref()
 const openEdit=(id:number)=>{
     //第一个参数是标题，第二个参数是要传入的值
   bus.emit('editId',id)
+  console.log('edit',id);
+  
   editP.value.open()
 }
 //删除按钮 降级管理员
@@ -103,7 +144,8 @@ const deleteP=ref()
 const openDelete=(id:number)=>{
     //第一个参数是标题，第二个参数是要传入的值
     bus.emit('deleteId',id)
-  deleteP.value.open()
+    console.log('dddd',id); 
+    deleteP.value.open()
 }
 </script>
 
@@ -122,6 +164,11 @@ const openDelete=(id:number)=>{
             justify-content: space-between;
             align-items: center;
             height: 48px;
+            background: #fff;
+            
+        }
+        .table-content{
+            padding:0 24px;
             background: #fff;
         }
     }
