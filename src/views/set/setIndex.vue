@@ -141,7 +141,30 @@
              </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="其他设置" name="fourth">Task</el-tab-pane>
+        <el-tab-pane label="其他设置" name="fourth">
+          <div class="home-wrapped">
+            <!-- 提示 -->
+            <div class="tips">
+              <span>提示：点击图片进行切换首页轮播图</span>
+            </div>
+            <!-- 轮播图部分 -->
+             <div class="swiper-wrapped" v-for="(item,index) in swiperData" :key="index">
+              <div class="swiper-name">轮播图{{index+1}}:&nbsp;&nbsp;</div>
+              <el-upload
+                class="avatar-uploader"
+                action="http://127.0.0.1:3007/set/uploadSwiper"
+                :show-file-list="false"
+                :on-success="handleSwiperSuccess"
+                :data="item"
+              >
+                <template #trigger>
+                  <img v-if="imageSwiperUrl[index]" :src="imageSwiperUrl[index]" class="swiper" />
+                  <img src="@/assets/bgm.png" alt="" v-else class="swiper">
+                </template>  
+            </el-upload>
+             </div>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
