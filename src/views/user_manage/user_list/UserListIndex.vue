@@ -19,8 +19,7 @@
              </div>
              <div class="select-wrapped" >
                 <el-select v-model="formData.department" placeholder="选择部门进行搜索">
-                    <el-option label="Zone one" value="shanghai" />
-                    <el-option label="Zone two" value="beijing" />
+                    <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
                 </el-select>
              </div>
            </div>
@@ -136,6 +135,13 @@ const createP=ref()
 const openCreate=()=>{
     createP.value.open()
 }
+//引入其他设置中的部门数据
+const departmentdData=ref([])
+import {getDepartment} from '@/api/setting.js' 
+const getdepartment=async()=>{
+    departmentdData.value=await getDepartment()
+}
+getdepartment()
 </script>
 
 <style lang="scss" scoped>

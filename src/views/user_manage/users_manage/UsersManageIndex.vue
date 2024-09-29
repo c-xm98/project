@@ -14,6 +14,7 @@
                     class="w-50 m-2"
                     placeholder="输入账号进行搜索"
                     :suffix-icon="Search"
+                    @change="searchAdmin"
                     />
              </div>
              <div class="button-wrapped">
@@ -31,8 +32,8 @@
                 <el-table-column  label="操作" >
                     <template #default="{row}">
                         <div>
-                            <el-button type="success" @click="openEdit(2)">编辑</el-button>
-                            <el-button type="danger">删除</el-button>
+                            <el-button type="success" @click="openEdit(row.id)">编辑</el-button>
+                            <el-button type="danger" @click="openDelete(row.id)">删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -43,11 +44,13 @@
     <!-- 底部 -->
     <div class="table-footer">
         <el-pagination
-            :page-size="20"
-            :pager-count="11"
+            :page-size="3"
+            :pager-count="paginationData.pageCount"
+            :current-page="paginationData.currentPage"
+            @current-change="currentChange"
             layout="prev, pager, next"
-            :total="1000"
-        />
+            :total="adminTotal"
+            />
     </div>
    </div>
    <!-- 弹窗组件 -->
@@ -58,14 +61,13 @@
 <script lang="ts" setup>
 /* 引入面包屑 */
 import breadCrumb from '@/components/breadCrumb.vue'
-import {ref } from 'vue'
+import {ref,reactive} from 'vue'
 const breadcrumb=ref()
 const item=ref({
 frist:'用户管理员',
  })
  //输入框
  import { Search } from '@element-plus/icons-vue'
-import { id } from 'element-plus/es/locale/index.mjs';
  const input2 = ref('')
  //表格
  
@@ -74,6 +76,46 @@ const tableData = ref([
         index:1
     }
 ])
+import {searchUser,returnListData,getAdminListLength} from '@/api/userInfor.js'
+const searchAdmin=async()=>{
+    //搜索完成后赋值到表格里
+    tableData.value=await searchUser(input2.value)
+}
+//分页
+const paginationData=reactive({
+//总页数
+pageCount:1,
+//当前所处页数
+currentPage:1,
+})
+//总数 获取管理员数量
+const adminTotal=ref<number>(0)
+const getAdminlistLength=async()=>{
+    const res=await getAdminListLength('用户管理员')
+    adminTotal.value=res.length
+    //console.log(adminTotal.value);
+    
+    //页数等于向上取整
+    paginationData.pageCount=Math.ceil(res.length/1)
+}
+getAdminlistLength()
+//获取默认的第一页的数据
+const getFirstPageList=async()=>{
+    tableData.value=await returnListData(0,'用户管理员')
+}
+getFirstPageList()
+//监听 换页
+const currentChange=async(value:number)=>{
+    tableData.value=await returnListData(value-1,'用户管理员')
+}
+
+
+//获取管理员列表
+//import {getAdminList} from '@/api/userInfor.js'
+const getAdminlist=()=>{
+    getAdminlistLength()
+}
+getAdminlist()
 //按钮 添加管理员
 
 import create from '@/views/user_manage/components/CreateAdmin.vue'
@@ -93,6 +135,15 @@ const openEdit=(id:number)=>{
     //第一个参数是标题，第二个参数是要传入的值
   bus.emit('editId',id)
   editP.value.open()
+}
+//删除按钮 降级管理员
+import deleteButton from '@/views/user_manage/components/DeleteAdmin.vue'
+const deleteP=ref()
+const openDelete=(id:number)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+    bus.emit('deleteId',id)
+    //console.log('dddd',id); 
+    deleteP.value.open()
 }
 </script>
 

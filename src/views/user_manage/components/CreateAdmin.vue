@@ -28,8 +28,7 @@
         </el-form-item>
         <el-form-item label="部门" prop="department">
             <el-select v-model="formData.department" placeholder="请选择部门">
-                <el-option label="总裁办" value="总裁办" />
-                <el-option label="项目部" value="项目部" />
+                <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
             </el-select>
         </el-form-item>
         
@@ -88,6 +87,7 @@ interface form {
     sex:string,
     email:string,
     department:string,
+    identity:string
 }
 //数据
 const formData : form=reactive({
@@ -97,7 +97,7 @@ const formData : form=reactive({
     sex:'',
     email:'',
     department:'',
-    identity:'产品管理员'
+    identity:''
 })
 //自定义规则
 
@@ -107,12 +107,15 @@ import { bus } from "@/utils/mitt.js"
 bus.on('createId',(id:number)=>{
     if(id===1){
         title.value='新建产品管理员'
+        formData.identity='产品管理员'
     }
     if(id===2){
         title.value='新建用户管理员'
+        formData.identity='用户管理员'
     }
     if(id===3){
         title.value='新建消息管理员'
+        formData.identity='消息管理员'
     }
 })
 //确定按钮，获取输入的信息
@@ -135,6 +138,13 @@ const addAdmin=async()=>{
 onBeforeUnmount(()=>{
   bus.all.clear()
 })
+//引入其他设置中的部门数据
+const departmentdData=ref([])
+import {getDepartment} from '@/api/setting.js' 
+const getdepartment=async()=>{
+    departmentdData.value=await getDepartment()
+}
+getdepartment()
 </script>
 
 <style lang="scss" scoped>
@@ -144,6 +154,5 @@ onBeforeUnmount(()=>{
 }
 :deep(.el-form-item){
     margin:30px ;
-
 }
 </style>

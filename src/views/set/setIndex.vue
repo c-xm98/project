@@ -142,28 +142,34 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="其他设置" name="fourth">
-          <div class="home-wrapped">
-            <!-- 提示 -->
-            <div class="tips">
-              <span>提示：点击图片进行切换首页轮播图</span>
-            </div>
-            <!-- 轮播图部分 -->
-             <div class="swiper-wrapped" v-for="(item,index) in swiperData" :key="index">
-              <div class="swiper-name">轮播图{{index+1}}:&nbsp;&nbsp;</div>
-              <el-upload
-                class="avatar-uploader"
-                action="http://127.0.0.1:3007/set/uploadSwiper"
-                :show-file-list="false"
-                :on-success="handleSwiperSuccess"
-                :data="item"
+          <div class="other-set">
+            <div class="department-set">
+              <span>部门设置</span>
+              <el-tag
+                v-for="tag in dynamicTags"
+                :key="tag"
+                class="mx-1"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)"
               >
-                <template #trigger>
-                  <img v-if="imageSwiperUrl[index]" :src="imageSwiperUrl[index]" class="swiper" />
-                  <img src="@/assets/bgm.png" alt="" v-else class="swiper">
-                </template>  
-            </el-upload>
-             </div>
+                {{ tag }}
+              </el-tag>
+              <el-input
+                v-if="inputVisible"
+                ref="InputRef"
+                v-model="inputValue"
+                class="ml-1 w-20"
+                size="small"
+                @keyup.enter="handleInputConfirm"
+                @blur="handleInputConfirm"
+              />
+              <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
+                添加其他部门
+              </el-button>
+            </div>
           </div>
+          <div>产品设置</div>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -328,6 +334,60 @@ const getAllswiper=async ()=>{
   imageSwiperUrl.value=await getAllSwiper()
 }
 getAllswiper()
+//其他设置
+import {setDepartment,getDepartment} from '@/api/setting.js'
+import { nextTick,toRaw} from 'vue'
+import { ElInput } from 'element-plus'
+
+const inputValue = ref('')
+const dynamicTags = ref()
+//获取部门数据
+const getdepartment=async()=>{
+  dynamicTags.value=await getDepartment()
+}
+getdepartment()
+const inputVisible = ref(false)
+const InputRef = ref<InstanceType<typeof ElInput>>()
+//关闭时的函数
+const handleClose =async (tag: string) => {
+  dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+  //传入到后端的数据
+  const res=await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+  if(res.status==0){
+    ElMessage({
+      message:'删除部门设置成功',
+      type:'success'
+    })
+  }else{
+    ElMessage.error('删除部门设置失败')
+  }
+  
+}
+//点击按钮出现输入框
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+//输入数据后的函数
+const handleInputConfirm =async () => {
+  if (inputValue.value) {
+    dynamicTags.value.push(inputValue.value)
+    const res=await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+  if(res.status==0){
+    ElMessage({
+      message:'添加部门设置成功',
+      type:'success'
+    })
+  }else{
+    ElMessage.error('添加部门设置失败')
+  }
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -409,7 +469,16 @@ getAllswiper()
   font-size: 32px;
   font-weight: 600;
 }
-
+.other-set{
+  padding-left: 50px;
+  font-size: 14px;
+  .department-set{
+    margin-bottom:24px ;
+    span{
+      margin-right: 24px;
+    }
+  }
+}
 </style>
 <style>
 .avatar-uploader .el-upload {
@@ -439,4 +508,5 @@ getAllswiper()
 .el-select__wrapper{
   width: 240px;
 }
+
 </style>

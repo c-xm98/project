@@ -75,6 +75,8 @@ const tableData = ref([])
  //输入的用户账号
  const input2 = ref<number>()
  //输入框
+ //输入框
+ import { Search } from '@element-plus/icons-vue'
 //import index from 'element-plus/es/locale/index.mjs';
 //const Id=index.id
 //搜索框
@@ -144,7 +146,7 @@ const deleteP=ref()
 const openDelete=(id:number)=>{
     //第一个参数是标题，第二个参数是要传入的值
     bus.emit('deleteId',id)
-    console.log('dddd',id); 
+    //console.log('dddd',id); 
     deleteP.value.open()
 }
 </script>
