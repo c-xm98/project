@@ -94,7 +94,7 @@ const getAdminlistLength=async()=>{
     //console.log(adminTotal.value);
     
     //页数等于向上取整
-    paginationData.pageCount=Math.ceil(res.length/1)
+    paginationData.pageCount=Math.ceil(res.length/10)
 }
 getAdminlistLength()
 //获取默认的第一页的数据

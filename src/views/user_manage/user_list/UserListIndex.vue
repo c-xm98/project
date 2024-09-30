@@ -15,17 +15,23 @@
                     class="w-50 m-2"
                     placeholder="输入账号进行搜索"
                     :suffix-icon="Search"
+                    @change="searchAdmin"
                     />
              </div>
              <div class="select-wrapped" >
-                <el-select v-model="formData.department" placeholder="选择部门进行搜索">
+                <el-select v-model="Department" 
+                placeholder="选择部门进行搜索"  
+                clearable
+                @change="searchForDepartment"
+                @clear="clearOperation"
+                 >
                     <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
                 </el-select>
              </div>
            </div>
              <div class="button-wrapped">
-                <el-button type="primary"  plain>筛选冻结用户</el-button>
-                <el-button type="primary" plain>显示全部用户</el-button>
+                <el-button type="primary"  plain  @click="banuserlist">筛选冻结用户</el-button>
+                <el-button type="primary" plain @click="getAdminlist">显示全部用户</el-button>
                 
              </div>
         </div>
@@ -48,13 +54,25 @@
                         </div>
                     </template>
                 </el-table-column>
-
-                <el-table-column prop="create_time" label="创建时间"  />
+                <el-table-column prop="create_time" label="创建时间">
+                    <template #default="{row}">
+                        <div>
+                            {{ row.create_time?.slice(0,10) }}
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="update_time" label="更新时间">
+                    <template #default="{row}">
+                        <div>
+                            {{ row.update_time?.slice(0,10) }}
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column  label="操作" width="200px">
                     <template #default="{row}">
                         <div>
-                            <el-button type="primary">冻结</el-button>
-                            <el-button type="success">解冻</el-button>
+                            <el-button type="primary" @click="banuser(row.id)">冻结</el-button>
+                            <el-button type="success" @click="hotuser(row.id)">解冻</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -65,16 +83,15 @@
     <!-- 底部 -->
     <div class="table-footer">
         <el-pagination
-            :page-size="3"
+            :page-size="1"
             :pager-count="paginationData.pageCount"
             :current-page="paginationData.currentPage"
             @current-change="currentChange"
             layout="prev, pager, next"
-            :total="1000"/>
+            :total="adminTotal"
+            />
     </div>
    </div>
-   <!-- 弹窗组件 -->
-   <create ref="createP"></create>
 </template>
 
 <script lang="ts" setup>
@@ -89,52 +106,21 @@ frist:'用户列表',
  })
  //输入框
  import { Search } from '@element-plus/icons-vue'
+ //搜索框
+import {searchUser,
+    returnListData,
+    getAdminListLength,
+    searchUserBydepartment,
+    banUser,
+    hotUser,
+    getBanList} from '@/api/userInfor.js'
  const input1 = ref()
-
  //表格
  
-const tableData = ref([
-    {
-        index:1,
-        status:0
-    }
-])
-interface form {
-    account:string,
-    password:string,
-    name:string,
-    sex:string,
-    email:string,
-    department:string,
-}
-//数据
-const formData : form=reactive({
-    account:'',
-    password:'',
-    name:'',
-    sex:'',
-    email:'',
-    department:'',
-    identity:'产品管理员'
-})
-//分页
-const paginationData=reactive({
+const tableData = ref([])
 
-    //总页数
-    pageCount:1,
-    //当前所处页数
-    currentPage:1,
-})
-//监听
-const currentChange=()=>{
 
-}
-//按钮 添加管理员
-import create from '@/views/user_manage/components/CreateAdmin.vue'
-const createP=ref()
-const openCreate=()=>{
-    createP.value.open()
-}
+
 //引入其他设置中的部门数据
 const departmentdData=ref([])
 import {getDepartment} from '@/api/setting.js' 
@@ -142,6 +128,84 @@ const getdepartment=async()=>{
     departmentdData.value=await getDepartment()
 }
 getdepartment()
+//部门筛选
+const Department=ref()
+const searchForDepartment=async()=>{
+    tableData.value=await searchUserBydepartment(Department.value)
+} 
+//清空选择框
+const clearOperation=async()=>{
+    tableData.value=await returnListData(0,'用户')
+} 
+const searchAdmin=async()=>{
+    //搜索完成后赋值到表格里
+    tableData.value=await searchUser(input1.value)
+}
+//分页
+const paginationData=reactive({
+//总页数
+pageCount:1,
+//当前所处页数
+currentPage:1,
+})
+//总数 获取管理员数量
+const adminTotal=ref<number>(0)
+const getAdminlistLength=async()=>{
+    const res=await getAdminListLength('用户')
+    adminTotal.value=res.length
+    
+    
+    //页数等于向上取整
+    paginationData.pageCount=Math.ceil(res.length/10)
+}
+getAdminlistLength()
+//获取默认的第一页的数据
+const getFirstPageList=async()=>{
+    tableData.value=await returnListData(0,'用户')
+}
+getFirstPageList()
+//监听 换页
+const currentChange=async(value:number)=>{
+    tableData.value=await returnListData(value-1,'用户')
+}
+//获取管理员列表
+//import {getAdminList} from '@/api/userInfor.js'
+const getAdminlist=()=>{
+    getFirstPageList()
+}
+
+
+//筛选冻结用户
+const banuserlist=async()=>{
+    tableData.value=await getBanList()
+}
+import { ElMessage } from 'element-plus'
+//冻结
+const banuser=async(id:number)=>{
+    const res=await banUser(id)
+    if(res.status==0){
+    ElMessage({
+        message:'冻结成功',
+        type:'success'
+    })
+    getAdminlist()
+   }else{
+    ElMessage.error('冻结失败')
+   }
+}
+//解冻
+
+const hotuser=async(id:number)=>{
+    const res=await hotUser(id)
+    if(res.status==0){
+    ElMessage({
+        message:'解冻成功',
+        type:'success'
+    })
+   }else{
+    ElMessage.error('解冻失败')
+   }
+}
 </script>
 
 <style lang="scss" scoped>

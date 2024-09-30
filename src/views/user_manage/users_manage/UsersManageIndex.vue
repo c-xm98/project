@@ -44,7 +44,7 @@
     <!-- 底部 -->
     <div class="table-footer">
         <el-pagination
-            :page-size="3"
+            :page-size="1"
             :pager-count="paginationData.pageCount"
             :current-page="paginationData.currentPage"
             @current-change="currentChange"
@@ -96,7 +96,7 @@ const getAdminlistLength=async()=>{
     //console.log(adminTotal.value);
     
     //页数等于向上取整
-    paginationData.pageCount=Math.ceil(res.length/1)
+    paginationData.pageCount=Math.ceil(res.length/10)
 }
 getAdminlistLength()
 //获取默认的第一页的数据
