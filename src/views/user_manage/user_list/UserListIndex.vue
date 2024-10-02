@@ -21,9 +21,9 @@
              <div class="select-wrapped" >
                 <el-select v-model="Department" 
                 placeholder="选择部门进行搜索"  
-                clearable
+                
                 @change="searchForDepartment"
-                @clear="clearOperation"
+                
                  >
                     <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
                 </el-select>
@@ -37,7 +37,7 @@
         </div>
         <!-- 表格内容 -->
         <div class="table-content">
-            <el-table :data="tableData" border style="width: 100%">
+            <el-table :data="tableData" border style="width: 100%" @row-dblclick="openUser">
                 <el-table-column type="index"  width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
@@ -92,6 +92,7 @@
             />
     </div>
    </div>
+   <userinfor ref="useri"></userinfor>
 </template>
 
 <script lang="ts" setup>
@@ -132,11 +133,21 @@ getdepartment()
 const Department=ref()
 const searchForDepartment=async()=>{
     tableData.value=await searchUserBydepartment(Department.value)
-} 
+}  
+/* 问题描述
+
+    在Element UI的`el-select`组件中，当使用`clearable`属性允许用户清除选择时，默认情况下，
+    清除操作会触发`change`事件。如果你希望在清除选项时不触发常规的`change`事件处理逻辑，
+    可以采用中间变量和自定义逻辑以下策略进行处理。
+    另，如果发现clear事件和change事件几乎是同时触发，
+    我们可以采用Vue的异步更新队列特性来确保事件处理函数执行。
+    这里的关键是使用`$nextTick`方法来适当延迟处理逻辑，确保DOM更新和数据变化完成后再执行接下来的步骤。
+ */
 //清空选择框
-const clearOperation=async()=>{
-    tableData.value=await returnListData(0,'用户')
-} 
+/*const clearOperation=async()=>{
+    getFirstPageList()
+} */ 
+
 const searchAdmin=async()=>{
     //搜索完成后赋值到表格里
     tableData.value=await searchUser(input1.value)
@@ -162,6 +173,8 @@ getAdminlistLength()
 //获取默认的第一页的数据
 const getFirstPageList=async()=>{
     tableData.value=await returnListData(0,'用户')
+    console.log('111',tableData.value);
+    
 }
 getFirstPageList()
 //监听 换页
@@ -205,6 +218,15 @@ const hotuser=async(id:number)=>{
    }else{
     ElMessage.error('解冻失败')
    }
+}
+import { bus } from "@/utils/mitt.js"
+//双击用户出现弹窗
+import userinfor from '@/views/user_manage/components/UserInfor.vue'
+const useri=ref()
+const openUser=(row:any)=>{
+    //第一个参数是标题，第二个参数是要传入的值
+  bus.emit('userId',row)
+  useri.value.open()
 }
 </script>
 
