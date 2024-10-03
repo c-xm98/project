@@ -9,7 +9,7 @@
   <div class="common-layout">
     <el-container>
       <el-aside width="200px">
-        <el-avatar shape="square" :size="120" :src="squareUrl" />
+        <el-avatar shape="square" :size="120" :src="userdata.imageUrl " />
       </el-aside>
       <el-main>
         <div>账号：{{ userdata.account }}</div>
@@ -24,12 +24,15 @@
       </el-main>
     </el-container>
     <el-footer>
-        <span>编辑</span>
-        <span>赋权</span>
-        <span>删除用户</span>
+        <span @click="openEdit(userdata.id)">编辑</span>
+        <span @click="openPromote(userdata.id)">赋权</span>
+        <span @click="openDelete(userdata.id)">删除用户</span>
     </el-footer>
   </div>
   </el-dialog>
+  <promote ref="promoteP"></promote>
+  <edit ref="editP"></edit>
+  <DeleteD ref="deleteP"></DeleteD>
 </template>
 
 <script lang="ts" setup>
@@ -38,6 +41,8 @@ import { bus } from "@/utils/mitt.js"
 //接收用户的数据
 
 bus.on('userId',async(row:any)=>{
+  userdata.imageUrl=row.imageUrl
+  userdata.id=row.id
     userdata.account=row.account
     userdata.name=row.name
     userdata.sex=row.sex
@@ -47,6 +52,8 @@ bus.on('userId',async(row:any)=>{
     
 })
 const userdata=reactive({
+    id:0,
+    imageUrl:'',
     name:'',
     sex:'',
     department:'',
@@ -62,12 +69,29 @@ const open=()=>{
 defineExpose({
     open
 })
-const state = reactive({
-  squareUrl:
-    'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-})
-const { squareUrl, } = toRefs(state)
 
+import promote from '@/views/user_manage/components/PromotiveAdmin.vue'
+import { number } from 'echarts';
+const promoteP=ref()
+//赋权
+const openPromote=(id:number)=>{
+  bus.emit('promoteId',id)
+  promoteP.value.open()
+}
+//编辑
+import edit from '@/views/user_manage/components/EditUser.vue'
+const editP=ref()
+const openEdit=(id:number)=>{
+  bus.emit('editId',id)
+  editP.value.open()
+}
+//删除用户
+import DeleteD from '@/views/user_manage/components/DeleteAdmin.vue'
+const deleteP=ref()
+const openDelete=(id:number)=>{
+  bus.emit('promoteId',id)
+  promoteP.value.open()
+}
 </script>
 
 <style lang="scss" scoped>

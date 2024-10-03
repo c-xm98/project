@@ -29,6 +29,13 @@
                 <el-table-column prop="name" label="姓名"  />
                 <el-table-column prop="department" label="部门" />
                 <el-table-column prop="email" label="邮箱"  />
+                <el-table-column prop="update_time" label="更新时间">
+                    <template #default="{row}">
+                        <div>
+                            {{ row.update_time?.slice(0,10) }}
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column  label="操作" >
                     <template #default="{row}">
                         <div>
@@ -54,8 +61,9 @@
     </div>
    </div>
     <!-- 弹窗组件 -->
-    <create ref="createP"></create>
-    <edit ref="editP"></edit>
+    <create ref="createP" @success="getAdminlist"></create>
+    <edit ref="editP" @success="getAdminlist"></edit>
+    <deleteButton ref="deleteP" @success="getAdminlist"></deleteButton>
 </template>
 
 <script lang="ts" setup>
@@ -111,7 +119,7 @@ const currentChange=async(value:number)=>{
 //获取管理员列表
 //import {getAdminList} from '@/api/userInfor.js'
 const getAdminlist=()=>{
-    getAdminlistLength()
+    getFirstPageList()
 }
 getAdminlist()
 //按钮 添加管理员

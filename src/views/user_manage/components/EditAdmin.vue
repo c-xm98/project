@@ -16,8 +16,8 @@
         </el-form-item>
         <el-form-item label="性别" prop="sex">
             <el-select v-model="formData.sex" placeholder="请选择性别">
-                <el-option label="男" value="man" />
-                <el-option label="女" value="woman" />
+                <el-option label="男" value="男" />
+                <el-option label="女" value="女" />
             </el-select>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
@@ -25,8 +25,8 @@
         </el-form-item>
         <el-form-item label="部门" prop="department">
             <el-select v-model="formData.department" placeholder="请选择部门">
-                <el-option label="总裁办" value="man" />
-                <el-option label="项目部" value="woman" />
+                <el-option label="总裁办" value="总裁办" />
+                <el-option label="项目部" value="项目部" />
             </el-select>
         </el-form-item>
         

@@ -173,7 +173,7 @@ getAdminlistLength()
 //获取默认的第一页的数据
 const getFirstPageList=async()=>{
     tableData.value=await returnListData(0,'用户')
-    console.log('111',tableData.value);
+    //console.log('111',tableData.value);
     
 }
 getFirstPageList()
@@ -186,7 +186,11 @@ const currentChange=async(value:number)=>{
 const getAdminlist=()=>{
     getFirstPageList()
 }
-
+bus.on('offDialog',(id:number)=>{
+ if(id==1){
+    getAdminlist()
+ }
+})
 
 //筛选冻结用户
 const banuserlist=async()=>{

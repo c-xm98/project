@@ -29,11 +29,18 @@
                 <el-table-column prop="name" label="姓名"  />
                 <el-table-column prop="department" label="部门" />
                 <el-table-column prop="email" label="邮箱"  />
+                <el-table-column prop="update_time" label="更新时间">
+                    <template #default="{row}">
+                        <div>
+                            {{ row.update_time?.slice(0,10) }}
+                        </div>
+                    </template>
+                </el-table-column>
                 <el-table-column  label="操作" >
                     <template #default="{row}">
                         <div>
                             <el-button type="success" @click="openEdit(row.id)">编辑</el-button>
-                            <el-button type="danger" @click="openDelete(row.id)">删除</el-button>
+                            <el-button type="danger" @click="openDelete(row.id)" >删除</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -54,8 +61,9 @@
     </div>
    </div>
    <!-- 弹窗组件 -->
-   <create ref="createP"></create>
-   <edit ref="editP"></edit>
+   <create ref="createP" @success="getAdminlist"></create>
+   <edit ref="editP" @success="getAdminlist"></edit>
+   <deleteButton ref="deleteP" @success="getAdminlist"></deleteButton>
 </template>
 
 <script lang="ts" setup>
@@ -113,7 +121,7 @@ const currentChange=async(value:number)=>{
 //获取管理员列表
 //import {getAdminList} from '@/api/userInfor.js'
 const getAdminlist=()=>{
-    getAdminlistLength()
+    getFirstPageList()
 }
 getAdminlist()
 //按钮 添加管理员
@@ -125,7 +133,7 @@ const createP=ref()
 const openCreate=(id:number)=>{
     //第一个参数是标题，第二个参数是要传入的值
   bus.emit('createId',id)
-    createP.value.open()
+  createP.value.open()
 }
 //按钮 编辑
 import edit from '@/views/user_manage/components/EditAdmin.vue'
@@ -145,6 +153,7 @@ const openDelete=(id:number)=>{
     //console.log('dddd',id); 
     deleteP.value.open()
 }
+
 </script>
 
 <style lang="scss" scoped>
