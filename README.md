@@ -89,12 +89,13 @@ wangEditor
 # 系统概览 包括：用户管理、产品管理、消息管理
 - 使用了ECharts、element栅格布局
 ### 基础布局
-## 用户管理
+# 用户管理
+## 用户管理员
 ### 用户管理页面的分页功能
 两种实现方式
 - 1 前端
 - 2 后端
-## 产品管理
+## 产品管理员
 - ProductManageIndex.vue
 - 布局
 ```
@@ -135,10 +136,13 @@ export const getAdminList=identity=>{
 添加、编辑、删除
 CreateAdmin.vue
 
-## 消息管理
+## 消息管理员
 修改标签的接口，获取标签结构的接口 
-
-
+# 产品管理
+## 产品列表
+- 新建产品
+## 出库列表
+![alt text](image-1.png)
 
 
 

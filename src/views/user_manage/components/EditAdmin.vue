@@ -109,7 +109,7 @@ bus.on('editId',async(id:number)=>{
 })
 import { ElMessage } from 'element-plus'
 //点击编辑弹窗的确定按钮，更新修改信息
-const emit=defineEmits(['success'])
+/* const emit=defineEmits(['success']) */
 import {editAdmin} from '@/api/userInfor.js'
 const updateAdmin=async()=>{
     const res=await editAdmin(formData)
@@ -118,7 +118,7 @@ const updateAdmin=async()=>{
         message:'编辑管理员成功',
         type:'success'
     })
-    emit('success')
+    bus.emit('adminDialogOff',2)
    }else{
     ElMessage.error('编辑失败')
    }

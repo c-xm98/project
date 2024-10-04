@@ -89,9 +89,16 @@ const openEdit=(id:number)=>{
 import DeleteD from '@/views/user_manage/components/DeleteAdmin.vue'
 const deleteP=ref()
 const openDelete=(id:number)=>{
-  bus.emit('promoteId',id)
-  promoteP.value.open()
+  let userinfor={
+    id:id,
+    account:userdata.account
+  }
+  bus.emit('deleteUserId',userinfor)
+  deleteP.value.open()
 }
+bus.on('offDialog',async()=>{
+  dialogVisible.value=false
+})
 </script>
 
 <style lang="scss" scoped>

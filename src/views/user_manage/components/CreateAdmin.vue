@@ -119,7 +119,7 @@ bus.on('createId',(id:number)=>{
     }
 })
 //确定按钮，获取输入的信息
-const emit=defineEmits(['success'])//确保页面的信息及时刷新
+/* const emit=defineEmits(['success'])//确保页面的信息及时刷新 */
 import {createAdmin} from '@/api/userInfor.js'
 const addAdmin=async()=>{
     const res=await createAdmin(formData)
@@ -128,7 +128,7 @@ const addAdmin=async()=>{
         message:'创建管理员成功',
         type:'success'
     })
-    emit('success')
+    bus.emit('adminDialogOff',1)
    }else{
     ElMessage.error('创建失败')
    }

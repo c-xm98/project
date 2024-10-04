@@ -27,6 +27,7 @@
                 <el-table-column type="index" width="50" />
                 <el-table-column prop="account" label="账号"  />
                 <el-table-column prop="name" label="姓名"  />
+                <el-table-column prop="identity" label="身份"  />
                 <el-table-column prop="department" label="部门" />
                 <el-table-column prop="email" label="邮箱"  />
                 <el-table-column prop="update_time" label="更新时间">
@@ -36,7 +37,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column  label="操作" >
+                <el-table-column  label="操作" width="200px" >
                     <template #default="{row}">
                         <div>
                             <el-button type="success" @click="openEdit(row.id)">编辑</el-button>
@@ -51,7 +52,7 @@
     <!-- 底部 -->
     <div class="table-footer">
         <el-pagination
-            :page-size="3"
+            :page-size="10"
             :pager-count="paginationData.pageCount"
             :current-page="paginationData.currentPage"
             @current-change="currentChange"
@@ -61,9 +62,9 @@
     </div>
    </div>
     <!-- 弹窗组件 -->
-    <create ref="createP" @success="getAdminlist"></create>
-    <edit ref="editP" @success="getAdminlist"></edit>
-    <deleteButton ref="deleteP" @success="getAdminlist"></deleteButton>
+    <create ref="createP"></create>
+    <edit ref="editP"></edit>
+    <deleteButton ref="deleteP"></deleteButton>
 </template>
 
 <script lang="ts" setup>
@@ -107,23 +108,41 @@ const getAdminlistLength=async()=>{
 getAdminlistLength()
 //获取默认的第一页的数据
 const getFirstPageList=async()=>{
-    tableData.value=await returnListData(0,'消息管理员')
+    tableData.value=await returnListData(1,'消息管理员')
 }
 getFirstPageList()
 //监听 换页
 const currentChange=async(value:number)=>{
-    tableData.value=await returnListData(value-1,'消息管理员')
+    paginationData.currentPage=value
+    tableData.value=await returnListData(paginationData.currentPage,'消息管理员')
 }
 
 
 //获取管理员列表
 //import {getAdminList} from '@/api/userInfor.js'
-const getAdminlist=()=>{
+/* const getAdminlist=()=>{
     getFirstPageList()
 }
-getAdminlist()
+getAdminlist() */
 //按钮 添加管理员
-
+bus.on('adminDialogOff',async(id:number)=>{
+    //当前页数
+    const current=paginationData.currentPage
+    //1 创建管理员 2  编辑管理员 3 对管理员进行降职
+        if(id==1){
+            getAdminListLength()
+        }
+        if(id==2){
+        tableData.value=await returnListData(paginationData.currentPage,'消息管理员')
+        }
+        if(id==3){
+            tableData.value=await returnListData(paginationData.currentPage,'消息管理员')  
+            if(tableData.value.length==0){
+                paginationData.currentPage -= current - 1
+                getAdminListLength()
+            }
+        }
+})
 import create from '@/views/user_manage/components/CreateAdmin.vue'
 import { bus } from "@/utils/mitt.js"
 

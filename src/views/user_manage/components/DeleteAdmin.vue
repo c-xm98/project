@@ -6,7 +6,8 @@
     align-center
     draggable
   >
- <span>是否去掉此用户的管理员职位？删除后此用户将重新展现在用户列表中</span>
+ <span v-if="adminid">是否去掉此用户的管理员职位？删除后此用户将重新展现在用户列表中</span>
+ <span v-else>是否删除此用户？删除后此用户</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
@@ -51,36 +52,53 @@ defineExpose({
     open
 })
 import { ElMessage } from 'element-plus'
-import {changeIdentityToUser} from '@/api/userInfor.js'
+import {changeIdentityToUser,deleteUser} from '@/api/userInfor.js'
 //const userid=ref()
 import {getUserInfor} from '@/api/userInfor.js'
+const adminid=ref()
 const userid=ref()
+const account=ref()
 bus.on('deleteId',async(id:number)=>{
-    /* const res=await getUserInfor(id)
-    formData.id=res.id
-    formData.account=res.account
-    formData.name=res.name
-    formData.sex=res.sex
-    formData.email=res.email
-    formData.department=res.department */
-    userid.value=id
-    console.log(id);
-    
+    adminid.value=id
+    //console.log(id);
+})
+bus.on('deleteUserId',async(userinfor:any)=>{
+  userid.value=userinfor.id
+  account.value=userinfor.account
+    //console.log(id);
 })
 
-const emit=defineEmits(['success'])
+/* const emit=defineEmits(['success']) */
 const deleteAdmin=async()=>{
-    const res=await changeIdentityToUser(userid.value)
+  if(adminid.value){
+    const res=await changeIdentityToUser(adminid.value)
     if(res.status==0){
     ElMessage({
         message:'降级成功',
         type:'success'
     })
-    emit('success')
+    bus.emit('adminDialogOff',3)
    }else{
     ElMessage.error('降级失败')
    }
     dialogVisible.value = false
+  }
+  if(userid.value){
+    const res=await deleteUser(userid.value,account.value)
+    if(res.status==0){
+    ElMessage({
+        message:'删除用户成功',
+        type:'success'
+    })
+    //假设用户第二页，我们的用户为第一条数据 删除之后 页面变为第一页
+    //假设用户第二页，我们的用户不为第一条数据 删除之后 页面任然为第二页
+    bus.emit('adminDialogOff',3)
+    dialogVisible.value = false
+   }else{
+    ElMessage.error('删除用户失败')
+   }
+    dialogVisible.value = false
+  }
     
 }
 //取消监听

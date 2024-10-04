@@ -31,7 +31,7 @@
            </div>
              <div class="button-wrapped">
                 <el-button type="primary"  plain  @click="banuserlist">筛选冻结用户</el-button>
-                <el-button type="primary" plain @click="getAdminlist">显示全部用户</el-button>
+                <el-button type="primary" plain @click="getFirstPageList">显示全部用户</el-button>
                 
              </div>
         </div>
@@ -71,8 +71,8 @@
                 <el-table-column  label="操作" width="200px">
                     <template #default="{row}">
                         <div>
-                            <el-button type="primary" @click="banuser(row.id)">冻结</el-button>
-                            <el-button type="success" @click="hotuser(row.id)">解冻</el-button>
+                            <el-button type="primary" @click="banuser(row.id)" :disabled="row.status==1">冻结</el-button>
+                            <el-button type="success" @click="hotuser(row.id)" :disabled="row.status==0">解冻</el-button>
                         </div>
                     </template>
                 </el-table-column>
@@ -83,7 +83,7 @@
     <!-- 底部 -->
     <div class="table-footer">
         <el-pagination
-            :page-size="1"
+            :page-size="10"
             :pager-count="paginationData.pageCount"
             :current-page="paginationData.currentPage"
             @current-change="currentChange"
@@ -163,33 +163,43 @@ currentPage:1,
 const adminTotal=ref<number>(0)
 const getAdminlistLength=async()=>{
     const res=await getAdminListLength('用户')
+    //console.log('用户的长度？',res);
+    
+    /* adminTotal.value=res.length */
     adminTotal.value=res.length
-    
-    
     //页数等于向上取整
     paginationData.pageCount=Math.ceil(res.length/10)
 }
 getAdminlistLength()
 //获取默认的第一页的数据
 const getFirstPageList=async()=>{
-    tableData.value=await returnListData(0,'用户')
+    tableData.value=await returnListData(1,'用户')
     //console.log('111',tableData.value);
-    
 }
 getFirstPageList()
 //监听 换页
 const currentChange=async(value:number)=>{
-    tableData.value=await returnListData(value-1,'用户')
+    paginationData.currentPage=value
+    tableData.value=await returnListData(value,'用户')
 }
 //获取管理员列表
 //import {getAdminList} from '@/api/userInfor.js'
-const getAdminlist=()=>{
+/* const getAdminlist=()=>{
     getFirstPageList()
-}
-bus.on('offDialog',(id:number)=>{
- if(id==1){
+} */
+bus.on('offDialog',async(id:number)=>{
+ /* if(id==1){
     getAdminlist()
- }
+ } */
+//当前页数
+const current=paginationData.currentPage
+    if(id){
+        tableData.value=await returnListData(paginationData.currentPage,'用户')  
+        if(tableData.value.length==0){
+            paginationData.currentPage -= current - 1
+            getAdminListLength()
+        }
+    }
 })
 
 //筛选冻结用户
@@ -205,7 +215,7 @@ const banuser=async(id:number)=>{
         message:'冻结成功',
         type:'success'
     })
-    getAdminlist()
+    getFirstPageList()
    }else{
     ElMessage.error('冻结失败')
    }
@@ -219,6 +229,7 @@ const hotuser=async(id:number)=>{
         message:'解冻成功',
         type:'success'
     })
+    getFirstPageList()
    }else{
     ElMessage.error('解冻失败')
    }
