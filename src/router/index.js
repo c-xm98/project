@@ -53,7 +53,17 @@ const routes=[
                 name:'user_list',
                 path:'/user_list',
                 component:()=>import('@/views/user_manage/user_list/UserListIndex.vue')
-             }
+             },
+             {//产品管理
+               name:'product_manage_list',
+               path:'/product_manage_list',
+               component:()=>import('@/views/product/product_manage/ProductManageIndex.vue')
+            },
+            {//产品管理
+               name:'out_product_manage_list',
+               path:'/out_product_manage_list',
+               component:()=>import('@/views/product/out_product_manage_list/OutProductManageIndex.vue')
+            },
         ]
     }
 ]
