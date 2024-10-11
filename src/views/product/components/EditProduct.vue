@@ -1,8 +1,8 @@
-<!-- 添加产品的弹窗 -->
+<!--编辑修改的弹窗 -->
 <template>
     <el-dialog
      v-model="dialogVisible"
-     title="新建产品"
+     title="编辑产品"
      width="600px"
      align-center
      draggable
@@ -10,7 +10,7 @@
      <!-- 表单内容 -->
      <el-form ref="ruleFormRef" :model="formData" label-width="120px" :rules="rules" :label-position="labelPosition">
          <el-form-item label="入库编号" prop="product_id">
-             <el-input v-model="formData.product_id" />
+             <el-input v-model="formData.product_id" disabled/>
          </el-form-item>
          <el-form-item label="产品名称" prop="product_name">
              <el-input v-model="formData.product_name" />
@@ -34,7 +34,7 @@
                 <el-input v-model="formData.product_single_price" />
          </el-form-item>
          <el-form-item label="入库负责人" prop="product_create_person">
-             <el-input v-model="formData.product_create_person" />
+             <el-input v-model="formData.product_create_person" disabled/>
          </el-form-item>
          <el-form-item label="入库备注" prop="in_memo">
              <el-input
@@ -47,7 +47,7 @@
      <template #footer>
        <span class="dialog-footer">
          <el-button @click="dialogVisible = false">取消</el-button>
-         <el-button type="primary" @click="addProduct" >确定</el-button>
+         <el-button type="primary" @click="editproduct" >确定</el-button>
        </span>
      </template>
    </el-dialog>
@@ -93,6 +93,7 @@
  //接口
  interface form {
     product_id?:number|null,
+    id?:number|null,
     product_name:string,
     product_category:string,
     product_unit:string,
@@ -104,6 +105,7 @@
  //数据
  const formData : form=reactive({
     product_id:null,
+    id:null,
     product_name:'',
     product_category:'',
     product_unit:'',
@@ -112,33 +114,34 @@
     product_create_person:'',
     in_memo:''
  })
+   //接收数据  id
+import { bus } from "@/utils/mitt.js"
+bus.on('editId',(row:any)=>{
+    formData.id=row.id
+    formData.product_create_person=row.product_create_person
+    formData.product_id=row.product_id
+})
 //向右对齐
 const labelPosition=ref('left')
  //确定按钮，获取输入的信息
  //产品入库
  const emit =defineEmits(['success'])
- import {createProduct} from '@/api/product.js'
- const addProduct=async()=>{
-     const res=await createProduct(formData)
+ import {editProduct} from '@/api/product.js'
+ const editproduct=async()=>{
+     const res=await editProduct(formData)
     if(res.status==0){
      ElMessage({
-         message:'产品入库成功',
+         message:'编辑产品成功',
          type:'success'
      })
      /* bus.emit('adminDialogOff',1) */
      emit('success')
     }else{
-     ElMessage.error('产品入库失败')
+     ElMessage.error('编辑产品失败')
     }
      dialogVisible.value = false
  }
- //引入其他设置中的部门数据
- const departmentdData=ref([])
- import {getDepartment} from '@/api/setting.js' 
- const getdepartment=async()=>{
-     departmentdData.value=await getDepartment()
- }
- getdepartment()
+
  </script>
  
  <style lang="scss" scoped>

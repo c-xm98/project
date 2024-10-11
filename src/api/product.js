@@ -98,7 +98,14 @@ export const applyProductList=()=>{
     })
 }
 
-
+//产品审核列表
+export const outProductList=()=>{
+    return instance({
+        /* 后端获取用户信息 */
+        url:'/pro/outProductList',
+        method:'POST',
+    })
+}
 //撤回  对产品进行撤回申请
 export const withdrawApplyProduct=id=>{
     return instance({

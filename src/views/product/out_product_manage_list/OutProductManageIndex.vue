@@ -20,12 +20,12 @@
                         </div> -->
                     </div>
                     <div class="module-common-product-tab">
-                        <el-table :data="applyTableData" border style="width: 100%">
+                        <el-table :data="tableData" border style="width: 100%">
                             <el-table-column type="index" width="50" />
-                            <el-table-column prop="product_out_id" label="出库编号" width="200" />
-                            <el-table-column prop="product_name" label="产品名称"  width="200"/>
-                            <el-table-column prop="product_out_number" label="申请数量" width="180" />
-                            <el-table-column prop="product_out_price" label="申请出库总价" width="180" />
+                            <el-table-column prop="product_out_id" label="出库编号" width="150" />
+                            <el-table-column prop="product_name" label="产品名称"  width="150"/>
+                            <el-table-column prop="product_out_number" label="申请数量" width="150" />
+                            <el-table-column prop="product_out_price" label="申请出库总价" width="150" />
                             <el-table-column prop="product_out_apply_person" label="出库申请人" width="100" />
                             <el-table-column prop="apply_memo" label="申请出库备注" width="180"  />
                             <el-table-column prop="product_apply_time" label="申请出库时间" width="180">
@@ -77,6 +77,13 @@
     //搜索完成后赋值到表格里
     //tableData.value=await searchUser(input2.value)
 }
+
+//获取产品列表
+import {outProductList} from '@/api/product.js'
+const outProductlist=async()=>{
+    tableData.value=await outProductList()
+}
+outProductlist()
   </script>
   
   <style lang="scss" scoped>

@@ -33,7 +33,9 @@
                                     <el-table-column prop="product_all_price" label="库存总价" width="100"  />
                                     <el-table-column prop="" label="库存状态" width="100">
                                         <template #default="{row}">
-                                            <el-tag type="success">库存较少</el-tag>
+                                            <el-tag type="danger" v-if="row.product_inwarehouse_number<30">库存较少</el-tag>
+                                            <el-tag type="success" v-else-if="row.product_inwarehouse_number>30 && row.product_inwarehouse_number<300">库存充足</el-tag>
+                                            <el-tag type="primary" v-else-if="row.product_inwarehouse_number>300">库存过剩</el-tag>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="product_create_person" label="入库负责人" width="100" />
@@ -52,12 +54,12 @@
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="in_memo" label="入库备注"  width="200"/>
-                                    <el-table-column  label="操作" width="300px" >
+                                    <el-table-column  label="操作" width="300px" fixed="right">
                                         <template #default="{row}">
                                             <div>
-                                                <el-button type="primary" >申请出库</el-button>
-                                                <el-button type="success" >修改</el-button>
-                                                <el-button type="danger" >删除</el-button>
+                                                <el-button type="primary" @click="ApplyOutButton(row)" :disabled='row.product_out_status=="申请出库"'>申请出库</el-button>
+                                                <el-button type="success" @click="EditProductButton(row)" :disabled='row.product_out_status=="申请出库"'>修改</el-button>
+                                                <el-button type="danger" @click="DeleteProductButton(row)" :disabled='row.product_out_status=="申请出库"'>删除</el-button>
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -107,7 +109,7 @@
                                     </el-table-column>
                                     <el-table-column prop="audit_memo" label="审核备注" width="180"  />
                                     
-                                    <el-table-column  label="操作" width="300px" >
+                                    <el-table-column  label="操作" width="300px" fixed="right">
                                         <template #default="{row}">
                                             <div>
                                                 <el-button type="primary" >申请出库</el-button>
@@ -130,6 +132,9 @@
         </div>
     </div>
     <inwarehouse ref="inware" @success="getproductlist"></inwarehouse>
+    <applyout ref="applyoutP"></applyout>
+    <editproduct ref="editproductP"></editproduct>
+    <deleteproduct ref="deleteproductP"></deleteproduct>
   </template>
   
   <script lang="ts" setup>
@@ -168,7 +173,37 @@ const getproductlist=async()=>{
     tableData.value=await getProductList()
 }
 getproductlist()
-
+//申请出库 按钮
+import { bus } from "@/utils/mitt.js"
+import applyout from '@/views/product/components/ApplyOut.vue'
+const applyoutP=ref()
+const ApplyOutButton=(row:any)=>{
+    /* bus传递参数，在组件里接收 */
+    bus.emit('applyId',row)
+    applyoutP.value.open()
+}
+//获取审核列表
+import {applyProductList} from '@/api/product.js'
+const applyProductlist=async()=>{
+    applyTableData.value=await applyProductList()
+}
+applyProductlist()
+//修改按钮
+import editproduct from '@/views/product/components/EditProduct.vue'
+const editproductP=ref()
+const EditProductButton=(row:any)=>{
+    /* bus传递参数，在组件里接收 */
+    bus.emit('editId',row)
+    editproductP.value.open()
+}
+//删除按钮
+import deleteproduct from '@/views/product/components/DeleteProduct.vue'
+const deleteproductP=ref()
+const DeleteProductButton=(row:any)=>{
+    /* bus传递参数，在组件里接收 */
+    bus.emit('deleteId',row)
+    deleteproductP.value.open()
+}
   </script>
   
   <style lang="scss" scoped>
