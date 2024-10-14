@@ -8,6 +8,7 @@
      draggable
    >
    <div class="product-name">您申请出库的产品是：{{formData.product_name}}</div>
+   <div class="product-name">该产品库存还有：{{formData.product_inwarehouse_number}}</div>
      <!-- 表单内容 -->
     <el-form ref="ruleFormRef" :model="formData" label-width="120px" :rules="rules" :label-position="labelPosition">
          <el-form-item label="申请出库编号" prop="product_out_id">
@@ -79,6 +80,7 @@
     product_single_price?:number|null,
     product_out_apply_person:string,
     apply_memo:string,
+    product_inwarehouse_number?:number|null,
  }
  //数据
  const formData : form=reactive({
@@ -88,7 +90,8 @@
     product_out_number:null,
     product_single_price:null,
     product_out_apply_person:'',
-    apply_memo:''
+    apply_memo:'',
+    product_inwarehouse_number:null
  })
   //接收数据
 import { bus } from "@/utils/mitt.js"
@@ -96,6 +99,7 @@ bus.on('applyId',(row:any)=>{
     formData.id=row.id
     formData.product_name=row.product_name
     formData.product_single_price=row.product_single_price
+    formData.product_inwarehouse_number=row.product_inwarehouse_number
 })
 //向右对齐
 const labelPosition=ref('left')

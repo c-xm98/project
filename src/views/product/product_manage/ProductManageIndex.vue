@@ -14,11 +14,14 @@
                                         class="w-50 m-2"
                                         placeholder="输入产品入库编号进行搜索"
                                         :suffix-icon="Search"
-                                        @change="searchAdmin"
+                                        @change="searchProductI"
+                                        clearable
+                                        @clear="getproductlist"
                                         />
                                 </div>
                                 <div class="button-wrapped">
                                     <el-button type="primary" @click="productInWarehouse">添加产品</el-button>
+                                    <el-button type="primary" plain @click="getproductlist">显示全部产品</el-button>
                                 </div>
                             </div>
                             <div class="module-common-product-tab">
@@ -42,14 +45,14 @@
                                     <el-table-column prop="product_create_time" label="入库时间" width="200">
                                         <template #default="{row}">
                                             <div>
-                                                {{ row.product_create_time?.slice(0,10) }}
+                                                {{ row.product_create_time?.slice(0,16) }}
                                             </div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="product_update_time" label="最后修改时间" width="200">
                                         <template #default="{row}">
                                             <div>
-                                                {{ row.product_update_time?.slice(0,10) }}
+                                                {{ row.product_update_time?.slice(0,16) }}
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -83,7 +86,9 @@
                                         class="w-50 m-2"
                                         placeholder="输入出库编号进行搜索"
                                         :suffix-icon="Search"
-                                        @change="searchAdmin"
+                                        @change="searchProductA"
+                                        clearable
+                                        @clear="applyProductlist"
                                         />
                                 </div>
                                 <div class="button-wrapped">
@@ -103,18 +108,19 @@
                                     <el-table-column prop="product_apply_time" label="申请出库时间" width="180">
                                         <template #default="{row}">
                                             <div>
-                                                {{ row.product_apply_time?.slice(0,10) }}
+                                                {{ row.product_apply_time?.slice(0,16) }}
                                             </div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="audit_memo" label="审核备注" width="180"  />
                                     
-                                    <el-table-column  label="操作" width="300px" fixed="right">
+                                    <el-table-column  label="操作" width="200px" fixed="right">
                                         <template #default="{row}">
                                             <div>
-                                                <el-button type="primary" >申请出库</el-button>
-                                                <el-button type="success" >修改</el-button>
-                                                <el-button type="danger" >删除</el-button>
+                                                <el-button type="danger" @click="AduitProductButton(row)">审核</el-button>
+                                               <!--  <el-button type="success" @click="AduitProductButton(row)" :disabled="row.product_out_status=='申请状态'">再次申请</el-button> -->
+                                                <el-button type="primary" @click="BackProductButton(row.id)">撤回申请</el-button>
+
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -132,9 +138,11 @@
         </div>
     </div>
     <inwarehouse ref="inware" @success="getproductlist"></inwarehouse>
-    <applyout ref="applyoutP"></applyout>
-    <editproduct ref="editproductP"></editproduct>
-    <deleteproduct ref="deleteproductP"></deleteproduct>
+    <applyout ref="applyoutP" @success="changeproductlist"></applyout>
+    <editproduct ref="editproductP" @success="getproductlist"></editproduct>
+    <deleteproduct ref="deleteproductP" @success="getproductlist"></deleteproduct>
+    <aduitproduct ref="aduitproductP" @success="changeproductlist"></aduitproduct>
+    <backapplyproduct ref="backapplyproductP" @success="changeproductlist"></backapplyproduct>
   </template>
   
   <script lang="ts" setup>
@@ -154,12 +162,17 @@
 //产品申请出库表格
   const applyTableData = ref([])
  //输入的产品编号
- const input1 = ref('')
+ const input1 = ref<number>()
  //产品出库编号
  const input2 = ref('')
- const searchAdmin=async()=>{
+ import {searchProductForId,searchProductForApplyId} from '@/api/product.js'
+ const searchProductI=async()=>{
     //搜索完成后赋值到表格里
-    //tableData.value=await searchUser(input2.value)
+    tableData.value=await searchProductForId(input1.value)
+}
+const searchProductA=async()=>{
+    //搜索完成后赋值到表格里
+    applyTableData.value=await searchProductForApplyId(input2.value)
 }
 //新建产品  入库
 import inwarehouse from '@/views/product/components/ProductInWarehouse.vue'
@@ -188,6 +201,11 @@ const applyProductlist=async()=>{
     applyTableData.value=await applyProductList()
 }
 applyProductlist()
+const changeproductlist=()=>{
+    applyProductlist()
+    getproductlist()
+}
+
 //修改按钮
 import editproduct from '@/views/product/components/EditProduct.vue'
 const editproductP=ref()
@@ -203,6 +221,25 @@ const DeleteProductButton=(row:any)=>{
     /* bus传递参数，在组件里接收 */
     bus.emit('deleteId',row)
     deleteproductP.value.open()
+}
+//审核 按钮
+import aduitproduct from '@/views/product/components/AuditProduct.vue'
+const aduitproductP=ref()
+const AduitProductButton=(row:any)=>{
+    /* bus传递参数，在组件里接收 */
+    bus.emit('auditId',row)
+    aduitproductP.value.open()
+}
+
+
+//撤回按钮
+import backapplyproduct from '@/views/product/components/BackApply.vue'
+const backapplyproductP=ref()
+const BackProductButton=(id:number)=>{
+    /* bus传递参数，在组件里接收 */
+   
+   bus.emit('backId',id)
+   backapplyproductP.value.open()
 }
   </script>
   

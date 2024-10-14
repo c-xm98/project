@@ -10,9 +10,11 @@
                             <el-input
                                 v-model="input1"
                                 class="w-50 m-2"
-                                placeholder="输入产品入库编号进行搜索"
+                                placeholder="输入出库编号进行搜索"
                                 :suffix-icon="Search"
-                                @change="searchAdmin"
+                                @change="searchOutProduct"
+                                clearable
+                                @clear="outProductlist"
                                 />
                         </div>
                         <!-- <div class="button-wrapped">
@@ -31,7 +33,7 @@
                             <el-table-column prop="product_apply_time" label="申请出库时间" width="180">
                                 <template #default="{row}">
                                     <div>
-                                        {{ row.product_apply_time?.slice(0,10) }}
+                                        {{ row.product_apply_time?.slice(0,16) }}
                                     </div>
                                 </template>
                             </el-table-column>
@@ -40,7 +42,7 @@
                             <el-table-column prop="product_audit_time" label="审核时间" width="180">
                                 <template #default="{row}">
                                     <div>
-                                        {{ row.product_audit_time?.slice(0,10) }}
+                                        {{ row.product_audit_time?.slice(0,16) }}
                                     </div>
                                 </template>
                             </el-table-column>
@@ -72,11 +74,8 @@
 //产品表格
   const tableData = ref([])
  //输入的产品编号
- const input1 = ref('')
- const searchAdmin=async()=>{
-    //搜索完成后赋值到表格里
-    //tableData.value=await searchUser(input2.value)
-}
+ const input1 = ref()
+
 
 //获取产品列表
 import {outProductList} from '@/api/product.js'
@@ -84,6 +83,12 @@ const outProductlist=async()=>{
     tableData.value=await outProductList()
 }
 outProductlist()
+//搜索
+import {searchProductForOutId} from '@/api/product.js'
+ const searchOutProduct=async()=>{
+    //搜索完成后赋值到表格里
+    tableData.value=await searchProductForOutId(input1.value)
+}
   </script>
   
   <style lang="scss" scoped>
