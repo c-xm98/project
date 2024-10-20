@@ -64,6 +64,16 @@ const routes=[
                path:'/out_product_manage_list',
                component:()=>import('@/views/product/out_product_manage_list/OutProductManageIndex.vue')
             },
+            {//消息列表
+               name:'message_list',
+               path:'/message_list',
+               component:()=>import('@/views/message/message_list/MessageListIndex.vue')
+            },
+            {//回收
+               name:'recycle',
+               path:'/recycle',
+               component:()=>import('@/views/message/recycle/RecycleIndex.vue')
+            },
         ]
     }
 ]
