@@ -51,8 +51,8 @@
                                     <el-table-column  label="操作" width="200px">
                                         <template #default="{row}">
                                             <div>
-                                                <el-button type="success" @click="editMessage(2)" >编辑</el-button>
-                                                <el-button type="danger" >删除</el-button>
+                                                <el-button type="success" @click="editMessage(row)" >编辑</el-button>
+                                                <el-button type="danger" @click="DeleteMessageButton(row)" >删除</el-button>
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -77,27 +77,27 @@
                                     </el-select>
                                 </div>
                                 <div class="button-wrapped">
-                                    <el-button type="primary" plain >发布系统消息</el-button>
+                                    <el-button type="primary" plain @click="createCompanyMessage(2)">发布系统消息</el-button>
                                 </div>
                             </div>
                             <div class="module-common-product-tab">
                                 <el-table :data="applyTableData" border style="width: 100%">
                                     <el-table-column type="index" width="50" />
                                     <el-table-column prop="message_title" label="消息主题"  />
-                                    <el-table-column prop="message_publish_name " label="发布者"  />
+                                    <el-table-column prop="message_publish_name" label="发布者"  />
                                     <el-table-column prop="message_click_number" label="阅读人数"  />
                                     <el-table-column prop="message_create_time" label="发布时间" >
                                         <template #default="{row}">
                                             <div>
-                                                {{ row.product_apply_time?.slice(0,16) }}
+                                                {{ row.message_create_time?.slice(0,16) }}
                                             </div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column  label="操作" width="200px">
                                         <template #default="{row}">
                                             <div>
-                                                <el-button type="success"  :disabled='row.product_out_status=="申请出库"'>编辑</el-button>
-                                                <el-button type="danger"  :disabled='row.product_out_status=="申请出库"'>删除</el-button>
+                                                <el-button type="success"  @click="editsystemMessage(row)">编辑</el-button>
+                                                <el-button type="danger" @click="DeleteMessageButton(row)">删除</el-button>
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -115,8 +115,9 @@
         </div>
     </div>
 <!-- 公司公告 -->
- <createCompanymessage ref="createCM"></createCompanymessage>
- <createCompanymessage ref="editCM"></createCompanymessage>
+ <createCompanymessage ref="createCM" @success="getnewlist"></createCompanymessage>
+ <!-- <createCompanymessage ref="editCM" @success="getmessagelist"></createCompanymessage> -->
+ <deletemessage ref="deletemessageP" @success="getnewlist"></deletemessage>
   </template>
   
   <script lang="ts" setup>
@@ -143,14 +144,18 @@ import { bus } from "@/utils/mitt.js"
 import createCompanymessage from '@/views/message/components/CreateMessage.vue'
 const createCM=ref()
 const createCompanyMessage=(id:number)=>{
-    bus.emit('editMessageid',id)
+    bus.emit('createMessageid',id)
     createCM.value.open()
 }
-//编辑公告按钮
-const editCM=ref()
-const editMessage=(id:number)=>{
-    bus.emit('editMessageid',id)
-    editCM.value.open()
+
+
+const editMessage=(row:any)=>{
+    bus.emit('editMessageid',row)
+    createCM.value.open()
+}
+const editsystemMessage=(row:any)=>{
+    bus.emit('editsystemMessageid',row)
+    createCM.value.open()
 }
 //获取公告列表
  import {companyMessageList} from '@/api/message.js'
@@ -158,8 +163,25 @@ const getmessagelist=async()=>{
     tableData.value=await companyMessageList()
 }
 getmessagelist()
-
-
+//获取系统消息列表
+import {systemMessageList} from '@/api/message.js'
+const getsystemlist=async()=>{
+    applyTableData.value=await systemMessageList()
+}
+getsystemlist()
+//刷新两个列表
+const getnewlist=()=>{
+    getsystemlist()
+    getmessagelist()  
+}
+//删除按钮
+import deletemessage from '@/views/message/components/DeleteMessage.vue'
+const deletemessageP=ref()
+const DeleteMessageButton=(row:any)=>{
+    /* bus传递参数，在组件里接收 */
+    bus.emit('deleteId',row)
+    deletemessageP.value.open()
+}
 
 
 

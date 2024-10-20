@@ -44,6 +44,7 @@ export const editMessage=data=>{
         message_title,
         message_receipt_object,
         message_content,
+    message_publish_name,
         message_level,
         id
     }=data
@@ -54,6 +55,7 @@ export const editMessage=data=>{
             message_title,
             message_receipt_object,
             message_content,
+            message_publish_name,
             message_level,
             id  
         }

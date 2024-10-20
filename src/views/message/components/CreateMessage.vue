@@ -13,28 +13,28 @@
          <el-form-item label="主题" prop="message_title">
              <el-input v-model="formData.message_title" />
          </el-form-item>
-         <el-form-item label="发布部门" prop="message_publish_department">
+         <el-form-item label="发布部门" prop="message_publish_department" v-if="title=='发布公告'||title=='编辑公告'">
             <el-select v-model="formData.message_publish_department" placeholder="请输入发布部门">
                 <el-option label="组织部" value="组织部" />
-                <el-option label="Zone two" value="beijing" />
+                <el-option label="开发部" value="开发部" />
             </el-select>
          </el-form-item>
          <el-form-item label="发布人" prop="message_publish_name">
             <el-input v-model="formData.message_publish_name" />
          </el-form-item>
-         <el-form-item label="消息类别" prop="message_category">
-             <el-select v-model="formData.message_category" placeholder="请选择消息类别">
+         <el-form-item label="消息类别" prop="message_category" v-if="title=='发布公告'||title=='编辑公告'">
+             <el-select v-model="formData.message_category" placeholder="请选择消息类别" >
                  <el-option label="公司公告" value="公司公告" />
-                 <el-option label="件" value="件" />
+                 <el-option label="系统消息" value="系统消息" />
              </el-select>
          </el-form-item>
-         <el-form-item label="接收部门" prop="message_receipt_object">
+         <el-form-item label="接收部门" prop="message_receipt_object" v-if="title=='发布公告'||title=='编辑公告'">
             <el-select v-model="formData.message_receipt_object" placeholder="请选择接受部门">
                  <el-option label="开发部" value="开发部" />
                  <el-option label="件" value="件" />
              </el-select>
          </el-form-item>
-         <el-form-item label="公告等级" prop="message_level">
+         <el-form-item label="公告等级" prop="message_level" v-if="title=='发布公告'||titlee=='编辑公告'">
             <el-select v-model="formData.message_level" placeholder="请选择公告等级">
                  <el-option label="一般" value="一般" />
                  <el-option label="重要" value="重要" />
@@ -68,16 +68,37 @@
  import type { FormInstance,FormRules} from 'element-plus'
 import { bus } from "@/utils/mitt.js"
 
-bus.on('editMessageid',async(id:number)=>{
+bus.on('createMessageid',async(id:number)=>{
     if (id == 1) {
 			title.value = '发布公告'
 			//valueHtml.value = await getCompanyIntroduce('公司介绍')
       
 		}
 		if (id == 2) {
-			title.value = '编辑公告'
+			title.value = '发布系统消息'
 			//valueHtml.value = await getCompanyIntroduce('公司架构')
 		}
+      
+})
+bus.on('editMessageid',async(row:any)=>{
+    title.value = '编辑公告'
+    formData.id =row.id
+    formData.message_title = row.message_title
+    formData.message_category = row.message_category
+    formData.message_publish_department = row.message_publish_department
+    formData.message_publish_name = row.message_publish_name
+    formData.message_receipt_object = row.message_receipt_object
+    formData.message_level = row.message_level
+    formData.message_content = row.message_content
+    //valueHtml.value = await getCompanyIntroduce('公司介绍')
+})
+bus.on('editsystemMessageid',async(row:any)=>{
+    title.value = '编辑系统消息'
+    formData.id =row.id
+    formData.message_title = row.message_title
+    formData.message_publish_name = row.message_publish_name
+    formData.message_content = row.message_content
+    //valueHtml.value = await getCompanyIntroduce('公司介绍')
 })
  //标题
  const title=ref()
@@ -183,6 +204,7 @@ const labelPosition=ref('left')
  import {publishMessage,editMessage} from '@/api/message.js'
  const addProduct=async()=>{
     if(title.value=='发布公告'){
+        formData.message_category='公司公告'
         const res=await publishMessage(formData)
     if(res.status==0){
      ElMessage({
@@ -200,13 +222,42 @@ const labelPosition=ref('left')
         const res=await editMessage(formData)
         if(res.status==0){
         ElMessage({
-            message:'编辑公告',
+            message:'编辑公告成功',
             type:'success'
         })
         /* bus.emit('adminDialogOff',1) */
         emit('success')
         }else{
-        ElMessage.error('编辑公告')
+        ElMessage.error('编辑公告失败')
+        }
+        dialogVisible.value = false
+    }
+    if(title.value=='发布系统消息'){
+        formData.message_category='系统消息'
+        const res=await publishMessage(formData)
+        if(res.status==0){
+        ElMessage({
+            message:'发布系统消息成功',
+            type:'success'
+        })
+        /* bus.emit('adminDialogOff',1) */
+        emit('success')
+        }else{
+        ElMessage.error('发布系统消息失败')
+        }
+        dialogVisible.value = false
+    }
+    if(title.value=='编辑系统消息'){
+        const res=await editMessage(formData)
+        if(res.status==0){
+        ElMessage({
+            message:'编辑系统消息成功',
+            type:'success'
+        })
+        /* bus.emit('adminDialogOff',1) */
+        emit('success')
+        }else{
+        ElMessage.error('编辑系统消息失败')
         }
         dialogVisible.value = false
     }
