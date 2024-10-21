@@ -9,18 +9,20 @@
                         <div class="pane-top">
                             <div class="module-common-product-header">
                                 <div class="search-wrapped">
-                                    <el-select v-model="department" placeholder="根据部门进行筛选">
-                                        <el-option label="组织部" value="组织部" />
-                                        <el-option label="Zone two" value="beijing" />
-                                    </el-select>
-                                    <el-radio-group v-model="level" class="ml-4">
-                                        <el-radio label="1" size="large">一般</el-radio>
-                                        <el-radio label="2" size="large">重要</el-radio>
-                                        <el-radio label="3" size="large">必要</el-radio>
+                                    <el-select v-model="Department" 
+                                        placeholder="选择部门进行搜索"  
+                                        @change="searchForDepartment"
+                                        >
+                                            <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
+                                        </el-select>
+                                    <el-radio-group v-model="level" class="ml-4" @change="searchmessagebylevel">
+                                        <el-radio value="一般" size="large">一般</el-radio>
+                                        <el-radio value="重要" size="large">重要</el-radio>
+                                        <el-radio value="必要" size="large">必要</el-radio>
                                     </el-radio-group>
                                 </div>
                                 <div class="button-wrapped">
-                                    <el-button type="primary" plain >全部公告</el-button>
+                                    <el-button type="primary" plain @click="getmessagelist">全部公告</el-button>
                                     <el-button type="primary" @click="createCompanyMessage(1)">发布公告</el-button>
                                 </div>
                             </div>
@@ -182,6 +184,25 @@ const DeleteMessageButton=(row:any)=>{
     bus.emit('deleteId',row)
     deletemessageP.value.open()
 }
+//按照部门筛选
+//引入其他设置中的部门数据
+const departmentdData=ref([])
+import {getDepartment} from '@/api/setting.js' 
+import {searchMessageBydepartment,searchMessageBylevel} from '@/api/message.js' 
+
+const getdepartment=async()=>{
+    departmentdData.value=await getDepartment()
+}
+getdepartment()
+//部门筛选
+const Department=ref()
+const searchForDepartment=async()=>{
+    tableData.value=await searchMessageBydepartment(Department.value)
+}  
+//消息等级筛选
+const searchmessagebylevel=async()=>{
+    tableData.value=await searchMessageBylevel(level.value)
+} 
 
 
 
@@ -239,9 +260,9 @@ const DeleteMessageButton=(row:any)=>{
  .search-wrapped{
     display: flex;
  }
- .el-select {
-    width: 200px;
- }
+ /* .el-select {
+    width: 150px;
+ } */
  .el-radio-group {
     align-items: center;
     display: inline-flex;

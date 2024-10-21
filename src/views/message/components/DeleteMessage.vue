@@ -2,12 +2,14 @@
 <template>
     <el-dialog
      v-model="dialogVisible"
-     title="删除操作"
+     :title=title
      width="600px"
      align-center
      draggable
    >
-  <span >确定删除此公告吗</span>
+  <span v-if="title=='删除消息'">确定删除此公告吗</span>
+  <span v-else-if="title=='还原消息'">确定还原此公告吗</span>
+  <span v-else-if="title=='彻底删除'">谨慎操作！确定彻底删除此公告吗？</span>
   
      <template #footer>
        <span class="dialog-footer">
@@ -79,9 +81,21 @@
     product_create_person:'',
     in_memo:''
  })
+ const title=ref()
    //接收数据  id
 import { bus } from "@/utils/mitt.js"
 bus.on('deleteId',(row:any)=>{
+    title.value="删除消息"
+    formData.id=row.id
+    
+})
+bus.on('recoverId',(row:any)=>{
+    title.value="还原消息"
+    formData.id=row.id
+    
+})
+bus.on('redeleteId',(row:any)=>{
+    title.value="彻底删除"
     formData.id=row.id
     
 })
@@ -90,9 +104,10 @@ const labelPosition=ref('left')
  //确定按钮，获取输入的信息
  //产品入库
  const emit =defineEmits(['success'])
- import {firstDelete} from '@/api/message.js'
+ import {firstDelete,deleteMessage,recover} from '@/api/message.js'
  const deletemessage=async()=>{
-     const res=await firstDelete(formData.id)
+    if(title.value=='删除消息'){
+        const res=await firstDelete(formData.id)
     if(res.status==0){
      ElMessage({
          message:'已添加至回收站',
@@ -104,6 +119,38 @@ const labelPosition=ref('left')
      ElMessage.error('添加至回收站失败')
     }
      dialogVisible.value = false
+
+    }
+    if(title.value=='还原消息'){
+        const res=await recover(formData.id)
+    if(res.status==0){
+     ElMessage({
+         message:'还原成功',
+         type:'success'
+     })
+     /* bus.emit('adminDialogOff',1) */
+     emit('success')
+    }else{
+     ElMessage.error('还原失败')
+    }
+     dialogVisible.value = false
+
+    }
+    if(title.value=='彻底删除'){
+        const res=await deleteMessage(formData.id)
+    if(res.status==0){
+     ElMessage({
+         message:'已彻底删除',
+         type:'success'
+     })
+     /* bus.emit('adminDialogOff',1) */
+     emit('success')
+    }else{
+     ElMessage.error('彻底删除失败')
+    }
+     dialogVisible.value = false
+
+    }
  }
 
  </script>

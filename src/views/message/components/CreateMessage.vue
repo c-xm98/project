@@ -14,10 +14,11 @@
              <el-input v-model="formData.message_title" />
          </el-form-item>
          <el-form-item label="发布部门" prop="message_publish_department" v-if="title=='发布公告'||title=='编辑公告'">
-            <el-select v-model="formData.message_publish_department" placeholder="请输入发布部门">
-                <el-option label="组织部" value="组织部" />
-                <el-option label="开发部" value="开发部" />
-            </el-select>
+            <el-select v-model="formData.message_publish_department" 
+                placeholder="选择部门进行搜索"  
+                >
+                    <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.value" />
+                </el-select>
          </el-form-item>
          <el-form-item label="发布人" prop="message_publish_name">
             <el-input v-model="formData.message_publish_name" />
@@ -29,12 +30,13 @@
              </el-select>
          </el-form-item>
          <el-form-item label="接收部门" prop="message_receipt_object" v-if="title=='发布公告'||title=='编辑公告'">
-            <el-select v-model="formData.message_receipt_object" placeholder="请选择接受部门">
-                 <el-option label="开发部" value="开发部" />
-                 <el-option label="件" value="件" />
-             </el-select>
+            <el-select v-model="formData.message_receipt_object" 
+                placeholder="选择部门进行搜索"  
+                >
+                    <el-option v-for="item in alloptions" :key="item.value" :label="item.value" :value="item.value" />
+                </el-select>
          </el-form-item>
-         <el-form-item label="公告等级" prop="message_level" v-if="title=='发布公告'||titlee=='编辑公告'">
+         <el-form-item label="公告等级" prop="message_level" v-if="title=='发布公告'||title=='编辑公告'">
             <el-select v-model="formData.message_level" placeholder="请选择公告等级">
                  <el-option label="一般" value="一般" />
                  <el-option label="重要" value="重要" />
@@ -262,13 +264,35 @@ const labelPosition=ref('left')
         dialogVisible.value = false
     }
  }
- //引入其他设置中的部门数据
- const departmentdData=ref([])
- import {getDepartment} from '@/api/setting.js' 
- const getdepartment=async()=>{
-     departmentdData.value=await getDepartment()
- }
- getdepartment()
+ //包括全体成员
+const alloptions=ref([])
+//不包括全体成员
+const options=ref([])
+//按照部门筛选
+//引入其他设置中的部门数据
+const departmentdData=ref([])
+import {getDepartment} from '@/api/setting.js' 
+
+const getdepartment=async()=>{
+    //departmentdData.value=await getDepartment()
+    const res=await getDepartment()
+    const data=[]
+    const datas=[]
+    for (let i = 0; i < res.length; i++) {
+        let obj={
+            value:res[i]
+        }
+        data.push(obj)
+        datas.push(obj)
+        
+    }
+    options.value=data
+    datas.push({value:"全体成员"})
+    alloptions.value=datas
+}
+getdepartment()
+
+
  </script>
  
  <style lang="scss" scoped>

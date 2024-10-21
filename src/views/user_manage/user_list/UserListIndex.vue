@@ -21,9 +21,7 @@
              <div class="select-wrapped" >
                 <el-select v-model="Department" 
                 placeholder="选择部门进行搜索"  
-                
                 @change="searchForDepartment"
-                
                  >
                     <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
                 </el-select>
