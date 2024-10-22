@@ -143,7 +143,9 @@ const Register=async()=>{
 const Login=async()=>{
   //传入表单数据的账号和密码
   const res=await login(loginData)
-  const {id} =res.results
+  console.log(res);
+  
+  const {id,name} =res.results
   //存到本地
   const {token}=res
   //console.log('222',id);
@@ -154,8 +156,10 @@ const Login=async()=>{
     })
     localStorage.setItem('id',id)
     localStorage.setItem('token',token)
+    localStorage.setItem('name',name)
     /* 拿着id去pinia的store更新数据 */
     store.userInfor(id);  
+    //store.userInfor(name);  
 
 // 现在 userStore 中的状态已经被更新，你可以直接使用这些状态  
     //登录成功跳转到首页

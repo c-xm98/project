@@ -74,6 +74,21 @@ const routes=[
                path:'/recycle',
                component:()=>import('@/views/message/recycle/RecycleIndex.vue')
             },
+            {//回收
+               name:'files',
+               path:'/files',
+               component:()=>import('@/views/files/FilesIndex.vue')
+            },
+            {//登录日志
+               name:'loginlog',
+               path:'/loginlog',
+               component:()=>import('@/views/log/LoginLogIndex.vue')
+            },
+            {//操作日志
+               name:'operationlog',
+               path:'/operationlog',
+               component:()=>import('@/views/log/OperationLogIndex.vue')
+            },
         ]
     }
 ]

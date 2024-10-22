@@ -260,9 +260,9 @@ const searchmessagebylevel=async()=>{
  .search-wrapped{
     display: flex;
  }
- /* .el-select {
+ .el-select {
     width: 150px;
- } */
+ }
  .el-radio-group {
     align-items: center;
     display: inline-flex;

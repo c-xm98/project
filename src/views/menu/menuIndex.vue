@@ -51,15 +51,15 @@
             <el-menu-item index="recycle">回收站</el-menu-item>
             </el-menu-item-group>
             </el-sub-menu>
-              <el-menu-item index="6">
+              <el-menu-item index="files">
                 <el-icon><Files /></el-icon>
                 <span>合同管理</span>
               </el-menu-item>
-              <el-menu-item index="7">
+              <el-menu-item index="operationlog">
                 <el-icon><DocumentCopy /></el-icon>
                 <span>操作日志</span>
               </el-menu-item>
-              <el-menu-item index="8">
+              <el-menu-item index="loginlog">
                 <el-icon><Notebook /></el-icon>
                 <span>登录日志</span>
               </el-menu-item>

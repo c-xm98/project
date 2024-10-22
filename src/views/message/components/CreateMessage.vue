@@ -21,7 +21,7 @@
                 </el-select>
          </el-form-item>
          <el-form-item label="发布人" prop="message_publish_name">
-            <el-input v-model="formData.message_publish_name" />
+            <el-input v-model="formData.message_publish_name" disabled />
          </el-form-item>
          <el-form-item label="消息类别" prop="message_category" v-if="title=='发布公告'||title=='编辑公告'">
              <el-select v-model="formData.message_category" placeholder="请选择消息类别" >
@@ -181,7 +181,7 @@ const toolbarConfig = {
     message_title:string;
     message_category:string;
     message_publish_department:string;
-    message_publish_name:string;
+    //message_publish_name:string;
     message_receipt_object:string;
     message_level:string;
     message_content:string;
@@ -193,7 +193,7 @@ const toolbarConfig = {
     message_title:'',
     message_category:'',
     message_publish_department:'',
-    message_publish_name:'',
+    message_publish_name:localStorage.getItem('name'),
     message_receipt_object:'',
     message_level:'',
     message_content:''
