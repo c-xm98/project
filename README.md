@@ -145,8 +145,19 @@ CreateAdmin.vue
 ![alt text](image-1.png)
 ## 编辑公告有一些问题
 编辑的弹窗里面的某些项目应该是不能修改的，但是没有实现这个功能
-
-
+## 登录日志 埋点
+```
+import {operationLog} from '@/api/log.js'
+//跟踪操作
+export const tracking= async(module,operation_person,operation_object,operation_level)=>{
+    if(module=='管理员'){
+        //操作内容
+        let operation_content=`对管理员'${operation_object}'进行了删除操作`
+       await operationLog(operation_person,operation_content,operation_level)
+    }
+   
+}
+```
 
 
 

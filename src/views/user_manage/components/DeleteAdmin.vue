@@ -58,6 +58,7 @@ import {getUserInfor} from '@/api/userInfor.js'
 const adminid=ref()
 const userid=ref()
 const account=ref()
+const name=ref()
 bus.on('deleteId',async(id:number)=>{
     adminid.value=id
     //console.log(id);
@@ -65,9 +66,9 @@ bus.on('deleteId',async(id:number)=>{
 bus.on('deleteUserId',async(userinfor:any)=>{
   userid.value=userinfor.id
   account.value=userinfor.account
-    //console.log(id);
+  name.value=userinfor.name
 })
-
+import {tracking} from '@/utils/operation.js'
 /* const emit=defineEmits(['success']) */
 const deleteAdmin=async()=>{
   if(adminid.value){
@@ -90,10 +91,17 @@ const deleteAdmin=async()=>{
         message:'删除用户成功',
         type:'success'
     })
+    //埋点
+   //console.log(name.value);
+    
+    tracking('管理员',localStorage.getItem('name'),name.value,'高级')
+
     //假设用户第二页，我们的用户为第一条数据 删除之后 页面变为第一页
     //假设用户第二页，我们的用户不为第一条数据 删除之后 页面任然为第二页
-    bus.emit('adminDialogOff',3)
+    //bus.emit('adminDialogOff',3)
+    bus.emit('offDialog',1)
     dialogVisible.value = false
+   
    }else{
     ElMessage.error('删除用户失败')
    }

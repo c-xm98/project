@@ -3,58 +3,44 @@
     <breadCrumb ref="breadcrumb" :item="item" ></breadCrumb>
     <div class="module-common-wrappped">
         <div class="module-common-content">
+            <div class="table-header">
+                <!-- 搜索框 -->
+            <div class="search-wrapped">
+                <el-input
+                    v-model="input2"
+                    class="w-50 m-2"
+                    placeholder="输入操作者进行搜索"
+                    :suffix-icon="Search"
+                    @change="searchOperationLog"
+                    />
+             </div>
             <div class="button-wrapped">
-                <el-upload
-                    v-model:file-list="fileList"
-                    class="upload-demo"
-                    action="http://127.0.0.1:3007/file/uploadFile"
-                    multiple
-                    :limit="3"
-                    :on-exceed="handleExceed"
-                    :on-success="handlSuccess"
-                    :show-file-list="false"
-                >
-                <el-button type="primary" plain >上传合同</el-button>
-            </el-upload>
-                
+                <el-button type="primary" plain @click="clearList">清空登录日志</el-button>
+            </div>
             </div>
           <div class="module-common-product-tab">
                 <el-table :data="tableData" border style="width: 100%">
                     <el-table-column type="index" width="50" />
-                    <el-table-column prop="file_name" label="合同名"  />
-                    <el-table-column prop="file_size" label="文件大小"  />
-                    <el-table-column prop="upload_person" label="上传用户"  />
-                    <el-table-column prop="download_number" label="下载次数"  />
-                    <el-table-column prop="upload_time" label="上传时间" >
-                        <template #default="{row}">
-                            <div>
-                                {{ row.upload_time?.slice(0,10) }}
-                            </div>
-                        </template>
+                    <el-table-column prop="account" label="登录账号"  />
+                    <el-table-column prop="name" label="姓名"  />
+                    <el-table-column prop="email" label="联系方式">
                     </el-table-column>
-                    <el-table-column  label="操作" width="200px">
+                    <el-table-column prop="login_time" label="登录时间" >
                         <template #default="{row}">
                             <div>
-                                <el-button plain >
-                                    <template #default>
-                                        <a :href="row.file_url" download="row.file_url" @click="changeClick(row.download_number,row.id)">下载</a>
-                                    </template>
-                                </el-button>
-                                <el-button type="danger" @click="DeleteMessageButton(row)" >删除文件</el-button>
+                                {{ row.login_time?.slice(0,16) }}
                             </div>
                         </template>
                     </el-table-column>
                 </el-table>
-  
             </div>
-  
         </div>
         <!-- 底部分页 -->
         <div class="table-footer">
-                <el-pagination layout="prev, pager, next" :total="50" />
-            </div>
+            <el-pagination layout="prev, pager, next" :total="50" />
+        </div>
     </div>
-    <deletemessage ref="deletemessageP" @success="getfilelist" ></deletemessage>
+    <deletemessage ref="deletemessageP" @success="getloginloglist" ></deletemessage>
   </template>
   
   <script lang="ts" setup>
@@ -65,64 +51,40 @@
   const item=ref({
   frist:'登录日志',
    })
-  
-  //文件列表表格
+   //搜索框
+   const input2 = ref()
+    //输入框
+ import { Search } from '@element-plus/icons-vue'
+
+
+
+  //操作日志列表表格
   const tableData = ref([])
   
   import { bus } from "@/utils/mitt.js"
   
   //获取文件列表
-  import {getFiles,bindFileAndUser} from '@/api/files.js'
-  const getfilelist=async()=>{
-    tableData.value=await getFiles()
+  import {getLoginList} from '@/api/log.js'
+  const getloginloglist=async()=>{
+    tableData.value=await getLoginList()
   }
-  getfilelist()
-  //上传文件
-  import type { UploadProps, UploadUserFile } from 'element-plus'
+  getloginloglist()
+ //搜索框
 
-const fileList = ref<UploadUserFile[]>([
-  
-])
- import { ElMessage } from 'element-plus'
-const handleExceed: UploadProps['onExceed'] = () =>{
-    ElMessage.warning('最多上传三个文件')
+ import {searchLoginList} from '@/api/log.js'
+const searchOperationLog=async()=>{
+    //搜索完成后赋值到表格里
+    tableData.value=await searchLoginList(input2.value)
 }
-const handlSuccess= (response:any) => {
-//添加一个绑定的函数
-/* console.log(response); */
-    if(response.status==0){
-        (async ()=>{
-            await bindFileAndUser(localStorage.getItem('name'),response.url)
-        })()
-        ElMessage({
-            message:'上传文件成功',
-            type:'success'
-        })
-        getfilelist()
-    }else{
-        ElMessage.error('上传文件失败！')
-    }
-}
-//下载 
 
-//删除
-  //删除按钮
-  import deletemessage from '@/views/files/compontents/TipsFile.vue'
+
+  //清空登录日志
+  import deletemessage from '@/views/log/compontents/TipsFile.vue'
   const deletemessageP=ref()
-  const DeleteMessageButton=(row:any)=>{
-    /* bus传递参数，在组件里接收 */
-    bus.emit('redeleteId',row)
+  const clearList=()=>{
     deletemessageP.value.open()
   }
-  import {updateClick} from '@/api/files.js'
- const changeClick=async(download_number:number,id:number)=>{
-    await updateClick (download_number,id)
-      
-    getfilelist()
- }
-  
-  
-  
+
   
   </script>
   
@@ -137,7 +99,13 @@ const handlSuccess= (response:any) => {
        padding: 0 10px; 
        height: 100%;
        background: #fff;
+       .table-header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+       }
     }
+
   .module-common-product-tab{
                 min-height: 10px;
                 padding: 10px 20px 20px;

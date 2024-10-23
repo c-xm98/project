@@ -6,20 +6,17 @@ export const loginLog=(name,account,email)=>{
         url:'/lvlog/loginLog',
         method:'POST',
         data:{
-            name,
         account,
+        name,
         email
         }
     })
 }
-export const getLoginList=(id)=>{
+export const getLoginList=()=>{
     return instance({
         /* 后端获取用户信息 */
         url:'/lvlog/getLoginList',
         method:'POST',
-        data:{
-           id
-        }
     })
 }
 export const getLoginListLength=()=>{
@@ -54,26 +51,25 @@ export const searchLoginList=(account)=>{
     })
 }
 //上传文件
-export const operationLog=(name,account,email)=>{
+export const operationLog=(operation_person,
+    operation_content,
+    operation_level,)=>{
     return instance({
         /* 后端获取用户信息 */
-        url:'/ovlog/loginLog',
+        url:'/ovlog/operationLog',
         method:'POST',
         data:{
-            name,
-        account,
-        email
+            operation_person,
+            operation_content,
+            operation_level,
         }
     })
 }
-export const getoperationList=(id)=>{
+export const getoperationList=()=>{
     return instance({
         /* 后端获取用户信息 */
         url:'/ovlog/getoperationList',
         method:'POST',
-        data:{
-           id
-        }
     })
 }
 export const getoperationListLength=()=>{
@@ -97,13 +93,13 @@ export const deleteoperationLisData=()=>{
         method:'POST',
     })
 }
-export const searchOperationList=(operaton_person )=>{
+export const searchOperationList=(operation_person )=>{
     return instance({
         /* 后端获取用户信息 */
         url:'/ovlog/deleteoperationLisData',
         method:'POST',
         data:{
-            operaton_person 
+            operation_person 
         }
     })
 }

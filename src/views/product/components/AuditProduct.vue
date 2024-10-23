@@ -54,6 +54,7 @@ const userStore=useUserInFor()
  const formData=reactive({
     product_out_id:0,
     id:0,
+    product_name:'',
     product_out_status:'',
     product_out_price:'',
     product_out_audit_person:userStore.name,
@@ -70,6 +71,7 @@ import { bus } from "@/utils/mitt.js"
 bus.on('auditId',(row:any)=>{
     formData.id=row.id
     formData.product_out_id=row.product_out_id
+    formData.product_name=row.product_name
     formData.product_out_status=row.product_out_status
     formData.product_out_price=row.product_out_price
     //formData.product_out_audit_person=row.product_out_audit_person
@@ -81,12 +83,9 @@ bus.on('auditId',(row:any)=>{
     
 })
 
-//向右对齐
-const labelPosition=ref('left')
- //确定按钮，获取输入的信息
-
  const emit =defineEmits(['success'])
  import {auditProduct} from '@/api/product.js'
+ import {tracking} from '@/utils/operation.js'
  const auditproduct=async()=>{
      const res=await auditProduct(formData)
     if(res.status==0){
@@ -94,6 +93,7 @@ const labelPosition=ref('left')
          message:'审核产品成功',
          type:'success'
      })
+     tracking('产品',localStorage.getItem('name'),formData.product_name,'高级',formData.product_out_status)
      /* bus.emit('adminDialogOff',1) */
      emit('success')
     }else{

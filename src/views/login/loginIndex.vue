@@ -138,14 +138,14 @@ const Register=async()=>{
 }else {ElMessage.error('注册失败，两次密码不一样')
   }
 }
- 
+import {loginLog} from '@/api/log.js'
 //点击登录
 const Login=async()=>{
   //传入表单数据的账号和密码
   const res=await login(loginData)
   console.log(res);
   
-  const {id,name} =res.results
+  const {id,name,account,email} =res.results
   //存到本地
   const {token}=res
   //console.log('222',id);
@@ -157,6 +157,9 @@ const Login=async()=>{
     localStorage.setItem('id',id)
     localStorage.setItem('token',token)
     localStorage.setItem('name',name)
+//埋点
+    await loginLog(account,name,email)
+
     /* 拿着id去pinia的store更新数据 */
     store.userInfor(id);  
     //store.userInfor(name);  

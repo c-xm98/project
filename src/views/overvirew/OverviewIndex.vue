@@ -10,7 +10,7 @@
             <!--头像外壳  -->
             <div class="person-avatar-wrapped">
                 <el-avatar :size="100" :src="userStore.imageUrl"></el-avatar>
-                <span class="department">所属部门：游戏策划</span>
+                <span class="department">所属部门：{{ accountData.department }}</span>
                 <div class="company">所属公司：上海鹰角网络科技有限公司</div>
             </div>
             <!-- 中间的竖线 -->
@@ -20,7 +20,7 @@
              <!-- 左边详细信息 -->
               <div class="detail-infor-wrapped">
                 <p>姓名：{{accountData.name}}</p>
-                <p>性别：{{accountData.gender}}</p>
+                <p>性别：{{accountData.sex}}</p>
                 <p>身份：{{accountData.identity}}</p>
                 <p>分管领域：超级管理</p>
                 <p>权限：最高权限</p>
@@ -87,27 +87,32 @@ const userStore=useUserInFor()
 //获取用户信息
 import {getUserInfor} from '@/api/userInfor.js'
 const getUserinfor=async()=>{
-    const res=getUserInfor(localStorage.getItem('id'))
-    console.log(res);
-    
+    const res=await getUserInfor(localStorage.getItem('id'))
+    accountData.name=res.name
+    accountData.sex=res.sex
+    accountData.identity=res.identity
+    accountData.department=res.department
 }
 getUserinfor()
 interface userData{
     identity:string,
-    
     department:string,
     name:string,
-    gender:string,
+    sex:string,
     
 }
 const accountData:userData=reactive({
   identity:'',
-  
   department:'',
   name:'',
-  gender:'',
+  sex:'',
   
 })
+import {getCategoryAndNumber,
+	getLevelAndNumber,
+	getAdminAndNumber,
+	getDayAndNumber
+} from '@/api/overview.js'
  // 调用echarts图
  onMounted(() => {
 		manageUser()
@@ -118,9 +123,16 @@ const accountData:userData=reactive({
 //饼图
 import * as echarts from 'echarts';
 // 管理员与用户比值图 饼图
-const manageUser = () => {
+//const data =ref()
+const manageUser =async () => {
 	// 通过类名 初始化
 		const mu = echarts.init(document.getElementById('manage-user'))
+		//显示加载中
+		mu.showLoading()
+	//数据
+	let data=await getAdminAndNumber()
+		mu.hideLoading()
+
 		//document.getElementById('manage-user').setAttribute('_echarts_instance_', '')
 		// 设置基本的参数
 			mu.setOption({
@@ -142,13 +154,7 @@ const manageUser = () => {
 						// name: 'Access From',
 						type: 'pie',
 						radius: '65%',
-                        data: [
-                {value: 335, name: '直接访问'},
-                {value: 310, name: '邮件营销'},
-                {value: 234, name: '联盟广告'},
-                {value: 135, name: '视频广告'},
-                {value: 1548, name: '搜索引擎'}
-            ],
+                        data:data.data,
 						emphasis: {
 							itemStyle: {
 								shadowBlur: 10,
@@ -167,6 +173,10 @@ const manageUser = () => {
 // 产品类别图 柱状图
 const productCategoryBar = async () => {
 		const pcb = echarts.init(document.getElementById('product-category-bar'))
+		pcb.showLoading()
+	//数据
+	let data=await getCategoryAndNumber()
+	pcb.hideLoading()
 		//document.querySelector('.product-category-bar').setAttribute('_echarts_instance_', '')
 			pcb.setOption({
 				title: {
@@ -182,14 +192,15 @@ const productCategoryBar = async () => {
 				xAxis: {
 					type: 'category',
 					// 食品类，服装类，鞋帽类，日用品类，家具类，家用电器类，纺织品类，五金类
-                    data: ['食品类', '服装类', '鞋帽类', '日用品类', '家具类', '家用电器类', '纺织品类', '五金类']
+                    data: data.category
 				},
 				yAxis: {
 					type: 'value'
+
 				},
 				series: [
 					{
-						data: [120, 200, 150, 80, 70, 110, 130,110],
+						data:data.price ,
 						type: 'bar',
 						barWidth: 40,
 						colorBy: "data"
@@ -201,8 +212,12 @@ const productCategoryBar = async () => {
 		})
 	}
 // 公告等级分布图 饼图
-const massageLevel = () => {
+const massageLevel = async() => {
 		const ml = echarts.init(document.getElementById('massage-level'))
+		ml.showLoading()
+	//数据
+	let data=await getLevelAndNumber()
+	ml.hideLoading()
 		//document.querySelector('.massage-level').setAttribute('_echarts_instance_', '')
 			ml.setOption({
 				title: {
@@ -243,13 +258,7 @@ const massageLevel = () => {
                         labelLine: {
                             show: false
                         },
-                        data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' }
-      ]
+                        data: data.data
 					}
 				]
 			})
@@ -258,7 +267,7 @@ const massageLevel = () => {
 		})
 	}
 // 消息每日总量图 折线图
-const massageAllDay = () => {
+const massageAllDay = async() => {
 	/* // 底部日期的实现
 		let dd = new Date()
 		let week = []
@@ -277,6 +286,10 @@ const massageAllDay = () => {
 			number.push(res.number)
 		}) */
 		const mad = echarts.init(document.getElementById('userlogin-week'))
+		mad.showLoading()
+	//数据
+	let data=await getDayAndNumber()
+	mad.hideLoading()
 		//document.querySelector('.massage-all-day').setAttribute('_echarts_instance_', '')
 			mad.setOption({
 				title: {
@@ -291,14 +304,14 @@ const massageAllDay = () => {
 				},
 				xAxis: {
 					type: 'category',
-                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    data: data.week
 				},
 				yAxis: {
 					type: 'value'
 				},
 				series: [
 					{
-                        data: [150, 230, 224, 218, 135, 147, 260],
+                        data: data.number,
 						type: 'line'
 					}
 				]

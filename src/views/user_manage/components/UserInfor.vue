@@ -91,7 +91,8 @@ const deleteP=ref()
 const openDelete=(id:number)=>{
   let userinfor={
     id:id,
-    account:userdata.account
+    account:userdata.account,
+    name:userdata.name
   }
   bus.emit('deleteUserId',userinfor)
   deleteP.value.open()

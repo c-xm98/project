@@ -77,3 +77,21 @@ export const setDepartment=(data)=>{
         }
     })
 }
+//设置产品
+export const setProduct=(data)=>{
+    
+    return instance({
+        url:'/set/setProduct',
+        method:'POST',
+        data:{
+            set_value:data,
+        }
+    })
+}
+export const getProduct=()=>{
+    
+    return instance({
+        url:'/set/getProduct',
+        method:'POST',
+    })
+}
