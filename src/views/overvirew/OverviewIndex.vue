@@ -35,19 +35,19 @@
         <div class="mid-content-right">
             <div class="title">常用管理</div>
             <el-row :gutter="20">
-                <el-col :span="6"><div class="button-area">
+                <el-col :span="6"><div class="button-area" @click="routerTo('users_manage')">
                     <el-icon><Coin /></el-icon>
                     <span class="button-name">用户管理</span>
                 </div></el-col>
-                <el-col :span="6"><div class="button-area">
+                <el-col :span="6"><div class="button-area"  @click="routerTo('product_manage')">
                     <el-icon><Files /></el-icon>
                     <span class="button-name">产品管理</span>
                 </div></el-col>
-                <el-col :span="6"><div class="button-area">
+                <el-col :span="6"><div class="button-area"  @click="routerTo('massage_manage')">
                     <el-icon><ChatRound /></el-icon>
                     <span class="button-name">系统消息</span>
                 </div></el-col>
-                <el-col :span="6"><div class="button-area">
+                <el-col :span="6"><div class="button-area"  @click="routerTo('set')">
                     <el-icon><User /></el-icon>
                     <span class="button-name">个人信息</span>
                 </div></el-col>
@@ -55,7 +55,7 @@
                     <el-icon><Message /></el-icon>
                     <span class="button-name">部门信息</span>
                 </div></el-col>
-                <el-col :span="6"><div class="button-area">
+                <el-col :span="6"><div class="button-area"  @click="routerTo('set')">
                     <el-icon><Burger /></el-icon>
                     <span class="button-name">系统设置</span>
                 </div></el-col>
@@ -320,6 +320,15 @@ const massageAllDay = async() => {
 			mad.resize()
 		})
 	}
+
+
+
+// 常用管理  路由跳转
+import {useRouter} from 'vue-router'
+const router=useRouter()
+const routerTo=(x:string)=>{
+	router.push(`/${x}`)
+}
 </script>
 
 

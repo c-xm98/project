@@ -25,8 +25,7 @@
         </el-form-item>
         <el-form-item label="部门" prop="department">
             <el-select v-model="formData.department" placeholder="请选择部门">
-                <el-option label="总裁办" value="总裁办" />
-                <el-option label="项目部" value="项目部" />
+                <el-option v-for="item in departmentdData" :key="item" :label="item" :value="item" />
             </el-select>
         </el-form-item>
         
@@ -124,6 +123,13 @@ const updateAdmin=async()=>{
    }
     dialogVisible.value = false
 }
+//引入其他设置中的部门数据
+const departmentdData=ref([])
+import {getDepartment} from '@/api/setting.js' 
+const getdepartment=async()=>{
+    departmentdData.value=await getDepartment()
+}
+getdepartment()
 </script>
 
 <style lang="scss" scoped>
