@@ -73,7 +73,9 @@
         <el-header>
           <span class="header-left-content">尊敬的 {{userStore.name}} 欢迎登录！ </span>
           <div class="header-right-conten">
-            <el-icon><Message /></el-icon>
+            <el-badge :is-dot="notread" class="item" @click="openDepartmentMsg">
+              <el-icon><Message /></el-icon>
+            </el-badge>
             <!-- 右上角的小头像 -->
             <el-avatar :size="24" :src="userStore.imageUrl" />
             <el-dropdown>
@@ -96,6 +98,7 @@
       </el-container>
     </el-container>
   </div>
+  <departmentmsg ref="departmentmsgP"></departmentmsg>
 </template>
 
 <script lang="ts" setup>
@@ -112,10 +115,39 @@ const goLogin=()=>{
 import {useUserInFor} from '@/store/userInfor'
 /* import {bind} from '@/api/userInfor' */
 const userStore=useUserInFor()
+import {ref } from 'vue'
 
+import departmentmsg from '@/components/DepartmentMsg.vue'
+const departmentmsgP=ref()
+const openDepartmentMsg=()=>{
+  departmentmsgP.value.open()
+  //console.log(departmentmsgP.value);
+  
+}
+//weidu
+const notread=ref(false)
+import {getReadListAndStatus} from '@/api/dep_msg.js'
+import { ElMessage } from 'element-plus'
+
+const getUserReadList=async()=>{
+  const res=await getReadListAndStatus(localStorage.getItem('id'))
+  console.log(res);
+  
+  if(res[0].read_list.length>0){
+    notread.value=true
+
+    }else{
+      notread.value=false
+
+    }
+}
+getUserReadList()
 </script>
 
 <style lang="scss" scoped>
+.item{
+  cursor: pointer;
+}
 ::-webkit-scrollbar{
   display: none;
 }
