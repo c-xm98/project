@@ -68,7 +68,27 @@ const messgaeInfor=reactive({
     message_title:'',
     message_content:''
 })
-import {getDepartmentMsg,} from '@/api/dep_msg.js'
+import {getDepartmentMsg,getDepartmentMsgList,
+    getReadListAndStatus,
+    clickDelete} from '@/api/dep_msg.js'
+//获取消息列表
+//定义当前未读消息
+const readlist=ref([])
+const getdepartmentmsg=async()=>{
+    //判断是否存在 用户是否有这个部门
+    const id=localStorage.getItem('id')
+    const department=localStorage.getItem('department')
+    if(department!==null){
+        const res= await getReadListAndStatus(id)
+        tableData.value= await getDepartmentMsgList(department)
+        if(res[0].read_list==0){
+          const {read_list} =await getDepartmentMsg(id,department) 
+        }else{
+            readlist.value=res[0].read_list
+        }
+    }
+}
+getdepartmentmsg()
  </script>
  
  <style lang="scss" scoped>

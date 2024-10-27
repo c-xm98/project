@@ -122,7 +122,6 @@ const departmentmsgP=ref()
 const openDepartmentMsg=()=>{
   departmentmsgP.value.open()
   //console.log(departmentmsgP.value);
-  
 }
 //weidu
 const notread=ref(false)
@@ -131,14 +130,10 @@ import { ElMessage } from 'element-plus'
 
 const getUserReadList=async()=>{
   const res=await getReadListAndStatus(localStorage.getItem('id'))
-  console.log(res);
-  
   if(res[0].read_list.length>0){
     notread.value=true
-
     }else{
       notread.value=false
-
     }
 }
 getUserReadList()

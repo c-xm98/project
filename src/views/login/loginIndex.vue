@@ -145,7 +145,7 @@ const Login=async()=>{
   const res=await login(loginData)
   console.log(res);
   
-  const {id,name,account,email} =res.results
+  const {id,name,account,email,department} =res.results
   //存到本地
   const {token}=res
   //console.log('222',id);
@@ -157,6 +157,7 @@ const Login=async()=>{
     localStorage.setItem('id',id)
     localStorage.setItem('token',token)
     localStorage.setItem('name',name)
+    localStorage.setItem('department',department)
 //埋点
     await loginLog(account,name,email)
 
